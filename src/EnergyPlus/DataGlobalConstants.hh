@@ -61,22 +61,22 @@ namespace DataGlobalConstants {
     // Data
     // MODULE PARAMETER DEFINITIONS:
     // End Use Parameters
-    extern int const NumEndUses;
+    constexpr int NumEndUses(14);
 
-    extern int const endUseHeating;
-    extern int const endUseCooling;
-    extern int const endUseInteriorLights;
-    extern int const endUseExteriorLights;
-    extern int const endUseInteriorEquipment;
-    extern int const endUseExteriorEquipment;
-    extern int const endUseFans;
-    extern int const endUsePumps;
-    extern int const endUseHeatRejection;
-    extern int const endUseHumidification;
-    extern int const endUseHeatRecovery;
-    extern int const endUseWaterSystem;
-    extern int const endUseRefrigeration;
-    extern int const endUseCogeneration;
+    constexpr int endUseHeating(1);
+    constexpr int endUseCooling(2);
+    constexpr int endUseInteriorLights(3);
+    constexpr int endUseExteriorLights(4);
+    constexpr int endUseInteriorEquipment(5);
+    constexpr int endUseExteriorEquipment(6);
+    constexpr int endUseFans(7);
+    constexpr int endUsePumps(8);
+    constexpr int endUseHeatRejection(9);
+    constexpr int endUseHumidification(10);
+    constexpr int endUseHeatRecovery(11);
+    constexpr int endUseWaterSystem(12);
+    constexpr int endUseRefrigeration(13);
+    constexpr int endUseCogeneration(14);
 
     // Resource Types
     extern std::string const cRT_None;

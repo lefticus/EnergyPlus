@@ -84,22 +84,22 @@ namespace DataGlobalConstants {
     // Data
     // MODULE PARAMETER DEFINITIONS:
     // End Use Parameters
-    int const NumEndUses(14);
 
-    int const endUseHeating(1);
-    int const endUseCooling(2);
-    int const endUseInteriorLights(3);
-    int const endUseExteriorLights(4);
-    int const endUseInteriorEquipment(5);
-    int const endUseExteriorEquipment(6);
-    int const endUseFans(7);
-    int const endUsePumps(8);
-    int const endUseHeatRejection(9);
-    int const endUseHumidification(10);
-    int const endUseHeatRecovery(11);
-    int const endUseWaterSystem(12);
-    int const endUseRefrigeration(13);
-    int const endUseCogeneration(14);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Resource Types
     std::string const cRT_None("None");
@@ -393,6 +393,7 @@ namespace DataGlobalConstants {
             } else if ((SELECT_CASE_var == "RAINWATER") || (SELECT_CASE_var == "PRECIPITATION")) {
                 ResourceTypeNum = iRT_RainWater; // record keeping
 
+            // pretty sure this should be GROUNDWATER
             } else if ((SELECT_CASE_var == "WELLWATER") || (SELECT_CASE_var == "Groundwater")) {
                 ResourceTypeNum = iRT_WellWater; // record keeping
 
