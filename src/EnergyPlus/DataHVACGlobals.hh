@@ -75,192 +75,195 @@ namespace DataHVACGlobals {
 
     // MODULE PARAMETER DEFINITIONS:
 
-    extern Real64 const SmallTempDiff;
-    extern Real64 const SmallMassFlow;
-    extern Real64 const VerySmallMassFlow;
-    extern Real64 const SmallLoad;
-    extern Real64 const TempControlTol; // temperature control tolerance for packaged equip. [deg C]
-    extern Real64 const SmallAirVolFlow;
-    extern Real64 const SmallWaterVolFlow;
-    extern Real64 const BlankNumeric;          // indicates numeric input field was blank
-    extern Real64 const RetTempMax;            // maximum return air temperature [deg C]
-    extern Real64 const RetTempMin;            // minimum return air temperature [deg C]
-    extern Real64 const DesCoilHWInletTempMin; // minimum heating water coil water inlet temp for UA sizing only. [deg C]
+    constexpr Real64 SmallTempDiff(1.0E-5);
+    constexpr Real64 SmallMassFlow(0.001);
+    constexpr Real64 VerySmallMassFlow(1.0E-30);
+    constexpr Real64 SmallLoad(1.0);
+    constexpr Real64 TempControlTol(0.1); // temperature control tolerance for packaged equip. [deg C]
+    constexpr Real64 SmallAirVolFlow(0.001);
+    constexpr Real64 SmallWaterVolFlow(1.0E-9);
+    constexpr Real64 BlankNumeric(-99999.0);      // indicates numeric input field was blank
+    constexpr Real64 RetTempMax(60.0);            // maximum return air temperature [deg C]
+    constexpr Real64 RetTempMin(-30.0);           // minimum return air temperature [deg C]
+    constexpr Real64 DesCoilHWInletTempMin(46.0); // minimum heating water coil water inlet temp for UA sizing only. [deg C]
 
-    extern int const NumOfSizingTypes; // request sizing for cooling air flow rate
+    // Number of Sizing types from list below
+    constexpr int NumOfSizingTypes(33); // number of sizing types
 
-    extern int const CoolingAirflowSizing;                              // request sizing for cooling air flow rate
-    extern int const CoolingWaterflowSizing;                            // request sizing for cooling coil water flow rate
-    extern int const HeatingWaterflowSizing;                            // request sizing for heating coil water flow rate
-    extern int const CoolingWaterDesAirInletTempSizing;                 // request sizing for cooling water coil inlet air temp
-    extern int const CoolingWaterDesAirInletHumRatSizing;               // request sizing for cooling water coil inlet air humidity ratio
-    extern int const CoolingWaterDesWaterInletTempSizing;               // request sizing for cooling water coil inlet water temp
-    extern int const CoolingWaterDesAirOutletTempSizing;                // request sizing for cooling water coil outlet air temp
-    extern int const CoolingWaterDesAirOutletHumRatSizing;              // request sizing for cooling water coil outlet air humidity ratio
-    extern int const CoolingWaterNumofTubesPerRowSizing;                // request sizing for cooling water coil number of tubes per row
-    extern int const HeatingWaterDesAirInletTempSizing;                 // request sizing for heating water coil inlet air temp
-    extern int const HeatingWaterDesAirInletHumRatSizing;               // request sizing for heating water coil inlet air humidity ratio
-    extern int const HeatingWaterDesCoilLoadUsedForUASizing;            // request sizing for heating water coil capacity used for UA sizing
-    extern int const HeatingWaterDesCoilWaterVolFlowUsedForUASizing;    // request sizing for heating water coil volume flow rate used for UA sizing
-    extern int const HeatingAirflowSizing;                              // request sizing for heating air flow rate
-    extern int const HeatingAirflowUASizing;                            // request sizing for heating air flow rate
-    extern int const SystemAirflowSizing;                               // request sizing for system air flow rate
-    extern int const CoolingCapacitySizing;                             // request sizing for cooling capacity
-    extern int const HeatingCapacitySizing;                             // request sizing for heating capacity
-    extern int const WaterHeatingCapacitySizing;                        // request sizing for heating capacity
-    extern int const WaterHeatingCoilUASizing;                          // request sizing for heating coil UA
-    extern int const SystemCapacitySizing;                              // request sizing for system capacity
-    extern int const CoolingSHRSizing;                                  // request sizing for cooling SHR
-    extern int const HeatingDefrostSizing;                              // request sizing for heating defrost capacity
-    extern int const MaxHeaterOutletTempSizing;                         // request sizing for heating coil maximum outlet temperature
-    extern int const AutoCalculateSizing;                               // identifies an autocalulate input
-    extern int const ZoneCoolingLoadSizing;                             // zone cooling sensible load (zsz file)
-    extern int const ZoneHeatingLoadSizing;                             // zome heating sensible load (zsz file)
-    extern int const MinSATempCoolingSizing;                            // minimum SA temperature in cooling
-    extern int const MaxSATempHeatingSizing;                            // maximum SA temperature in heating
-    extern int const ASHRAEMinSATCoolingSizing;                         // minimum SA temperature in cooling model when using ASHRAE 90.1 SZVAV method
-    extern int const ASHRAEMaxSATHeatingSizing;                         // maximum SA temperature in heating model when using ASHRAE 90.1 SZVAV method
-    extern int const HeatingCoilDesAirInletTempSizing;                  // design inlet air temperature for heating coil
-    extern int const HeatingCoilDesAirOutletTempSizing;                 // design outlet air temperature for heating coil
-    extern int const HeatingCoilDesAirInletHumRatSizing;                // design inlet air humidity ratio for heating coil
-    extern int const DesiccantDehumidifierBFPerfDataFaceVelocitySizing; // identifies desiccant performance data face velocity autosisizing input
+    // Sizing types
+    constexpr int CoolingAirflowSizing(1);                               // request sizing for cooling air flow rate
+    constexpr int CoolingWaterflowSizing(2);                             // request sizing for cooling water flow rate
+    constexpr int HeatingWaterflowSizing(3);                             // request sizing for heating coil water flow rate
+    constexpr int CoolingWaterDesAirInletTempSizing(4);                  // request sizing for cooling water coil inlet air temp
+    constexpr int CoolingWaterDesAirInletHumRatSizing(5);                // request sizing for cooling water coil inlet air humidity ratio
+    constexpr int CoolingWaterDesWaterInletTempSizing(6);                // request sizing for cooling water coil inlet water temp
+    constexpr int CoolingWaterDesAirOutletTempSizing(7);                 // request sizing for cooling water coil outlet air temp
+    constexpr int CoolingWaterDesAirOutletHumRatSizing(8);               // request sizing for cooling water coil outlet air humidity ratio
+    constexpr int CoolingWaterNumofTubesPerRowSizing(9);                 // request sizing for cooling water coil number of tubes per row
+    constexpr int HeatingWaterDesAirInletTempSizing(10);                 // request sizing for heating water coil inlet air temp
+    constexpr int HeatingWaterDesAirInletHumRatSizing(11);               // request sizing for heating water coil inlet air humidity ratio
+    constexpr int HeatingWaterDesCoilLoadUsedForUASizing(12);            // request sizing for heating water coil capacity used for UA sizing
+    constexpr int HeatingWaterDesCoilWaterVolFlowUsedForUASizing(13);    // request sizing for heating water coil volume flow rate used for UA sizing
+    constexpr int HeatingAirflowSizing(14);                              // request sizing for heating air flow rate
+    constexpr int HeatingAirflowUASizing(15);                            // request sizing for heating air flow rate
+    constexpr int SystemAirflowSizing(16);                               // request sizing for system air flow rate
+    constexpr int CoolingCapacitySizing(17);                             // request sizing for cooling capacity
+    constexpr int HeatingCapacitySizing(18);                             // request sizing for heating capacity
+    constexpr int WaterHeatingCapacitySizing(19);                        // request sizing for water-side heating capacity
+    constexpr int WaterHeatingCoilUASizing(20);                          // request sizing for heating coil UA
+    constexpr int SystemCapacitySizing(21);                              // request sizing for system capacity
+    constexpr int CoolingSHRSizing(22);                                  // request sizing for cooling SHR
+    constexpr int HeatingDefrostSizing(23);                              // request sizing for heating defrost capacity
+    constexpr int MaxHeaterOutletTempSizing(24);                         // request sizing for heating coil maximum outlet temperature
+    constexpr int AutoCalculateSizing(25);                               // identifies an autocalulate input
+    constexpr int ZoneCoolingLoadSizing(26);                             // zone cooling sensible load (zsz file)
+    constexpr int ZoneHeatingLoadSizing(27);                             // zome heating sensible load (zsz file)
+    constexpr int MinSATempCoolingSizing(28);                            // minimum SA temperature in cooling
+    constexpr int MaxSATempHeatingSizing(29);                            // maximum SA temperature in heating
+    constexpr int ASHRAEMinSATCoolingSizing(30);                         // minimum SA temperature in cooling model when using ASHRAE 90.1 SZVAV method
+    constexpr int ASHRAEMaxSATHeatingSizing(31);                         // maximum SA temperature in heating model when using ASHRAE 90.1 SZVAV method
+    constexpr int HeatingCoilDesAirInletTempSizing(32);                  // design inlet air temperature for heating coil
+    constexpr int HeatingCoilDesAirOutletTempSizing(33);                 // design outlet air temperature for heating coil
+    constexpr int HeatingCoilDesAirInletHumRatSizing(34);                // design inlet air humidity ratio for heating coil
+    constexpr int DesiccantDehumidifierBFPerfDataFaceVelocitySizing(35); // identifies desiccant performance data face velocity autosisizing input
 
     // Condenser Type (using same numbering scheme as for chillers)
-    extern int const AirCooled;   // Air-cooled condenser
-    extern int const WaterCooled; // Water-cooled condenser
-    extern int const EvapCooled;  // Evaporatively-cooled condenser
-    extern int const WaterHeater; // Condenser heats water (e.g., in water heater tank)
+    constexpr int AirCooled(1);   // Air-cooled condenser
+    constexpr int WaterCooled(2); // Water-cooled condenser
+    constexpr int EvapCooled(3);  // Evaporatively-cooled condenser
+    constexpr int WaterHeater(4); // Condenser heats water (e.g., in water heater tank)
 
     // The following parameters are used for system availability status
-    extern int const NoAction;
-    extern int const ForceOff;
-    extern int const CycleOn;
-    extern int const CycleOnZoneFansOnly;
+    constexpr int NoAction(0);
+    constexpr int ForceOff(1);
+    constexpr int CycleOn(2);
+    constexpr int CycleOnZoneFansOnly(3);
     // The following parameters describe the setpoint types in TempControlType(ActualZoneNum)
-    extern int const SingleHeatingSetPoint;
-    extern int const SingleCoolingSetPoint;
-    extern int const SingleHeatCoolSetPoint;
-    extern int const DualSetPointWithDeadBand;
+    constexpr int SingleHeatingSetPoint(1);
+    constexpr int SingleCoolingSetPoint(2);
+    constexpr int SingleHeatCoolSetPoint(3);
+    constexpr int DualSetPointWithDeadBand(4);
     // parameters describing air duct type
-    extern int const Main;
-    extern int const Cooling;
-    extern int const Heating;
-    extern int const Other;
-    extern int const RAB;
+    constexpr int Main(1);
+    constexpr int Cooling(2);
+    constexpr int Heating(3);
+    constexpr int Other(4);
+    constexpr int RAB(5);
     // parameters describing fan types
-    extern int const NumAllFanTypes; // cpw22Aug2010 (was 4)
+    constexpr int NumAllFanTypes(6); // cpw22Aug2010 (was 4)
 
     // fan types
-    extern int const FanType_SimpleConstVolume;
-    extern int const FanType_SimpleVAV;
-    extern int const FanType_SimpleOnOff;
-    extern int const FanType_ZoneExhaust;
-    extern int const FanType_ComponentModel;    // cpw22Aug2010 (new)
-    extern int const FanType_SystemModelObject; //
+    constexpr int FanType_SimpleConstVolume(1);
+    constexpr int FanType_SimpleVAV(2);
+    constexpr int FanType_SimpleOnOff(3);
+    constexpr int FanType_ZoneExhaust(4);
+    constexpr int FanType_ComponentModel(5);    // cpw22Aug2010
+    constexpr int FanType_SystemModelObject(6); // new for V8.7, simple versatile fan object
 
     // Fan Minimum Flow Fraction Input Method
-    extern int const MinFrac;
-    extern int const FixedMin;
+    constexpr int MinFrac(1);
+    constexpr int FixedMin(2);
     // Fan mode
-    extern int const CycFanCycCoil;  // Cycling fan, cycling coil = 1
-    extern int const ContFanCycCoil; // Continuous fan, cycling coil = 2
+    constexpr int CycFanCycCoil(1);  // Cycling fan, cycling coil = 1
+    constexpr int ContFanCycCoil(2); // Continuous fan, cycling coil = 2
     // Fan placement
-    extern int const BlowThru; // fan before coil
-    extern int const DrawThru; // fan after coil
+    constexpr int BlowThru(1); // fan before coil
+    constexpr int DrawThru(2); // fan after coil
     // OA Controller Heat Recovery Bypass Control Types
-    extern int const BypassWhenWithinEconomizerLimits;   // heat recovery controlled by economizer limits
-    extern int const BypassWhenOAFlowGreaterThanMinimum; // heat recovery ON at minimum OA in economizer mode
+    constexpr int BypassWhenWithinEconomizerLimits(0);   // heat recovery controlled by economizer limits
+    constexpr int BypassWhenOAFlowGreaterThanMinimum(1); // heat recovery ON at minimum OA in economizer mode
 
     extern Array1D_string const cFanTypes; // cpw22Aug2010 | cpw22Aug2010 (new)
 
     // parameters describing unitary systems
-    extern int const NumUnitarySystemTypes;
+    constexpr int NumUnitarySystemTypes(7);
     // Furnace/Unitary System Types
-    extern int const Furnace_HeatOnly;
-    extern int const Furnace_HeatCool;
-    extern int const UnitarySys_HeatOnly;
-    extern int const UnitarySys_HeatCool;
-    extern int const UnitarySys_HeatPump_AirToAir;
-    extern int const UnitarySys_HeatPump_WaterToAir;
-    extern int const UnitarySys_AnyCoilType;
+    constexpr int Furnace_HeatOnly(1);
+    constexpr int Furnace_HeatCool(2);
+    constexpr int UnitarySys_HeatOnly(3);
+    constexpr int UnitarySys_HeatCool(4);
+    constexpr int UnitarySys_HeatPump_AirToAir(5);
+    constexpr int UnitarySys_HeatPump_WaterToAir(6);
+    constexpr int UnitarySys_AnyCoilType(7);
     extern Array1D_string const cFurnaceTypes;
 
     // parameters describing coil types
-    extern int const NumAllCoilTypes;
+    // parameters describing coil types
+    constexpr int NumAllCoilTypes(34);
 
-    extern int const CoilDX_CoolingSingleSpeed;
-    extern int const CoilDX_HeatingEmpirical;
-    extern int const CoilDX_CoolingTwoSpeed;
-    extern int const CoilDX_CoolingHXAssisted;
-    extern int const CoilDX_CoolingTwoStageWHumControl;
-    extern int const CoilDX_HeatPumpWaterHeaterPumped;
-    extern int const CoilDX_HeatPumpWaterHeaterWrapped;
-    extern int const CoilDX_MultiSpeedCooling;
-    extern int const CoilDX_MultiSpeedHeating;
+    constexpr int CoilDX_CoolingSingleSpeed(1);
+    constexpr int CoilDX_HeatingEmpirical(2);
+    constexpr int CoilDX_CoolingTwoSpeed(3);
+    constexpr int CoilDX_CoolingHXAssisted(4);
+    constexpr int CoilDX_CoolingTwoStageWHumControl(5);
+    constexpr int CoilDX_HeatPumpWaterHeaterPumped(6);
+    constexpr int CoilDX_HeatPumpWaterHeaterWrapped(7);
+    constexpr int CoilDX_MultiSpeedCooling(8);
+    constexpr int CoilDX_MultiSpeedHeating(9);
 
-    extern int const Coil_HeatingGasOrOtherFuel;
-    extern int const Coil_HeatingGas_MultiStage;
-    extern int const Coil_HeatingElectric;
-    extern int const Coil_HeatingElectric_MultiStage;
-    extern int const Coil_HeatingDesuperheater;
+    constexpr int Coil_HeatingGasOrOtherFuel(10);
+    constexpr int Coil_HeatingGas_MultiStage(11);
+    constexpr int Coil_HeatingElectric(12);
+    constexpr int Coil_HeatingElectric_MultiStage(13);
+    constexpr int Coil_HeatingDesuperheater(14);
 
-    extern int const Coil_CoolingWater;
-    extern int const Coil_CoolingWaterDetailed;
-    extern int const Coil_HeatingWater;
-    extern int const Coil_HeatingSteam;
-    extern int const CoilWater_CoolingHXAssisted;
+    constexpr int Coil_CoolingWater(15);
+    constexpr int Coil_CoolingWaterDetailed(16);
+    constexpr int Coil_HeatingWater(17);
+    constexpr int Coil_HeatingSteam(18);
+    constexpr int CoilWater_CoolingHXAssisted(19);
 
-    extern int const Coil_CoolingWaterToAirHP;
-    extern int const Coil_HeatingWaterToAirHP;
-    extern int const Coil_CoolingWaterToAirHPSimple;
-    extern int const Coil_HeatingWaterToAirHPSimple;
-    extern int const CoilVRF_Cooling;
-    extern int const CoilVRF_Heating;
+    constexpr int Coil_CoolingWaterToAirHP(20);
+    constexpr int Coil_HeatingWaterToAirHP(21);
+    constexpr int Coil_CoolingWaterToAirHPSimple(22);
+    constexpr int Coil_HeatingWaterToAirHPSimple(23);
+    constexpr int CoilVRF_Cooling(24);
+    constexpr int CoilVRF_Heating(25);
 
-    extern int const Coil_UserDefined;
-    extern int const CoilDX_PackagedThermalStorageCooling;
+    constexpr int Coil_UserDefined(26);
+    constexpr int CoilDX_PackagedThermalStorageCooling(27);
 
-    extern int const Coil_CoolingWaterToAirHPVSEquationFit;
-    extern int const Coil_HeatingWaterToAirHPVSEquationFit;
-    extern int const Coil_CoolingAirToAirVariableSpeed;
-    extern int const Coil_HeatingAirToAirVariableSpeed;
-    extern int const CoilDX_HeatPumpWaterHeaterVariableSpeed;
+    constexpr int Coil_CoolingWaterToAirHPVSEquationFit(28);
+    constexpr int Coil_HeatingWaterToAirHPVSEquationFit(29);
+    constexpr int Coil_CoolingAirToAirVariableSpeed(30);
+    constexpr int Coil_HeatingAirToAirVariableSpeed(31);
+    constexpr int CoilDX_HeatPumpWaterHeaterVariableSpeed(32);
 
-    extern int const CoilVRF_FluidTCtrl_Cooling;
-    extern int const CoilVRF_FluidTCtrl_Heating;
+    constexpr int CoilVRF_FluidTCtrl_Cooling(33);
+    constexpr int CoilVRF_FluidTCtrl_Heating(34);
 
     extern Array1D_string const cAllCoilTypes;
     extern Array1D_string const cCoolingCoilTypes;
     extern Array1D_string const cHeatingCoilTypes;
 
     // Water to air HP coil types
-    extern int const WatertoAir_Simple;
-    extern int const WatertoAir_ParEst;
-    extern int const WatertoAir_VarSpeedEquationFit;
-    extern int const WatertoAir_VarSpeedLooUpTable;
+    constexpr int WatertoAir_Simple(1);
+    constexpr int WatertoAir_ParEst(2);
+    constexpr int WatertoAir_VarSpeedEquationFit(3);
+    constexpr int WatertoAir_VarSpeedLooUpTable(4);
 
     // Water to Air HP Water Flow Mode
-    extern int const WaterCycling;  // water flow cycles with compressor
-    extern int const WaterConstant; // water flow is constant
-    extern int const
-        WaterConstantOnDemand; // water flow is constant whenever the coil is operational - this is the only method used in EP V7.2 and earlier
+    constexpr int WaterCycling(1);  // water flow cycles with compressor
+    constexpr int WaterConstant(2); // water flow is constant
+    constexpr int
+        WaterConstantOnDemand(3); // water flow is constant whenever the coil is operational - this is the only method used in EP V7.2 and earlier
 
     // parameters describing coil performance types
-    extern int const CoilPerfDX_CoolBypassEmpirical;
+    constexpr int CoilPerfDX_CoolBypassEmpirical(100);
 
     // Airflow per total capacity range (Regular DX coils)
-    extern Real64 const MaxRatedVolFlowPerRatedTotCap1; // m3/s per watt = 450 cfm/ton
-    extern Real64 const MinRatedVolFlowPerRatedTotCap1; // m3/s per watt = 300 cfm/ton
-    extern Real64 const MaxHeatVolFlowPerRatedTotCap1;  // m3/s per watt = 600 cfm/ton
-    extern Real64 const MaxCoolVolFlowPerRatedTotCap1;  // m3/s per watt = 500 cfm/ton
-    extern Real64 const MinOperVolFlowPerRatedTotCap1;  // m3/s per watt = 200 cfm/ton
+    constexpr Real64 MaxRatedVolFlowPerRatedTotCap1(0.00006041); // m3/s per watt = 450 cfm/ton
+    constexpr Real64 MinRatedVolFlowPerRatedTotCap1(0.00004027); // m3/s per watt = 300 cfm/ton
+    constexpr Real64 MaxHeatVolFlowPerRatedTotCap1(0.00008056);  // m3/s per watt = 600 cfm/ton
+    constexpr Real64 MaxCoolVolFlowPerRatedTotCap1(0.00006713);  // m3/s per watt = 500 cfm/ton
+    constexpr Real64 MinOperVolFlowPerRatedTotCap1(0.00002684);  // m3/s per watt = 200 cfm/ton
 
     // 100% DOAS DX coils Airflow per total capacity ratio
-    extern Real64 const MaxRatedVolFlowPerRatedTotCap2; // m3/s per watt = 250 cfm/ton
-    extern Real64 const MinRatedVolFlowPerRatedTotCap2; // m3/s per watt = 125 cfm/ton
-    extern Real64 const MaxHeatVolFlowPerRatedTotCap2;  // m3/s per watt = 300 cfm/ton
-    extern Real64 const MaxCoolVolFlowPerRatedTotCap2;  // m3/s per watt = 300 cfm/ton
-    extern Real64 const MinOperVolFlowPerRatedTotCap2;  // m3/s per watt = 100 cfm/ton
+    constexpr Real64 MaxRatedVolFlowPerRatedTotCap2(0.00003355); // m3/s per watt = 250 cfm/ton
+    constexpr Real64 MinRatedVolFlowPerRatedTotCap2(0.00001677); // m3/s per watt = 125 cfm/ton
+    constexpr Real64 MaxHeatVolFlowPerRatedTotCap2(0.00004026);  // m3/s per watt = 300 cfm/ton
+    constexpr Real64 MaxCoolVolFlowPerRatedTotCap2(0.00004026);  // m3/s per watt = 300 cfm/ton
+    constexpr Real64 MinOperVolFlowPerRatedTotCap2(0.00001342);  // m3/s per watt = 100 cfm/ton
 
     extern Array1D<Real64> MaxRatedVolFlowPerRatedTotCap;
     extern Array1D<Real64> MinRatedVolFlowPerRatedTotCap;
@@ -269,49 +272,50 @@ namespace DataHVACGlobals {
     extern Array1D<Real64> MinOperVolFlowPerRatedTotCap;
 
     // dx coil type (DXCT)
-    extern int const RegularDXCoil; // Regular DX coils or mixed air dx coils
-    extern int const DOASDXCoil;    // 100% DOAS DX coils
+    constexpr int RegularDXCoil(1); // Regular DX coils or mixed air dx coils
+    constexpr int DOASDXCoil(2);    // 100% DOAS DX coils
     extern int DXCT;                // dx coil type: regular DX coil ==1, 100% DOAS DX coil = 2
 
     // Parameters describing Heat Exchanger types
-    extern int const NumHXTypes;
+    constexpr int NumHXTypes(3);
 
-    extern int const HX_AIRTOAIR_FLATPLATE;
-    extern int const HX_AIRTOAIR_GENERIC;
-    extern int const HX_DESICCANT_BALANCED;
+    constexpr int HX_AIRTOAIR_FLATPLATE(1);
+    constexpr int HX_AIRTOAIR_GENERIC(2);
+    constexpr int HX_DESICCANT_BALANCED(3);
 
     extern Array1D_string const cHXTypes;
 
     // Parameters describing air terminal mixers
-    extern int const NumATMixerTypes;
+    constexpr int NumATMixerTypes(2);
 
-    extern int const No_ATMixer;
-    extern int const ATMixer_InletSide;
-    extern int const ATMixer_SupplySide;
+    constexpr int No_ATMixer(0);
+    constexpr int ATMixer_InletSide(1);
+    constexpr int ATMixer_SupplySide(2);
 
     extern Array1D_string const cATMixerTypes;
-    extern bool const ATMixerExists;
+    constexpr bool ATMixerExists(true);
 
     // Parameters describing variable refrigerant flow terminal unit types
-    extern int const NumVRFTUTypes;
+    constexpr int NumVRFTUTypes(1);
 
-    extern int const VRFTUType_ConstVolume;
+    constexpr int VRFTUType_ConstVolume(1);
 
     extern Array1D_string const cVRFTUTypes;
 
     // VRF Heating Performance Curve Temperature Type
-    extern int const NumVRFHeatingPerformanceOATTypes;
-    extern int const WetBulbIndicator;
-    extern int const DryBulbIndicator;
+    constexpr int NumVRFHeatingPerformanceOATTypes(2);
+    constexpr int WetBulbIndicator(1);
+    constexpr int DryBulbIndicator(2);
 
     extern Array1D_string const cVRFHeatingPerformanceOATTypes;
 
     // parameter concerning the amount of change in zone temperature is needed
     // for oscillation of zone temperature to be detected.
-    extern Real64 const OscillateMagnitude;
+    constexpr Real64 OscillateMagnitude(0.15);
 
     // Parameters for HVACSystemRootFindingAlgorithm
-    extern int const Bisection;
+    constexpr int Bisection(2);
+
     // DERIVED TYPE DEFINITIONS
 
     // INTERFACE BLOCK SPECIFICATIONS
@@ -388,47 +392,48 @@ namespace DataHVACGlobals {
     extern int MinAirLoopIterationsAfterFirst; // minimum number of HVAC iterations after FirstHVACIteration (must be at least 2 for sequenced loads
                                                // to operate on air loops)
 
-    extern int const NumZoneHVACTerminalTypes;
+    constexpr int NumZoneHVACTerminalTypes(38);
     extern Array1D_string const ccZoneHVACTerminalTypes;
     extern Array1D_string const ZoneHVACTerminalTypes;
-    extern int const ZoneEquipTypeOf_VariableRefrigerantFlow;
-    extern int const ZoneEquipTypeOf_EnergyRecoveryVentilator;
-    extern int const ZoneEquipTypeOf_FourPipeFanCoil;
-    extern int const ZoneEquipTypeOf_OutdoorAirUnit;
-    extern int const ZoneEquipTypeOf_PackagedTerminalAirConditioner;
-    extern int const ZoneEquipTypeOf_PackagedTerminalHeatPump;
-    extern int const ZoneEquipTypeOf_UnitHeater;
-    extern int const ZoneEquipTypeOf_UnitVentilator;
-    extern int const ZoneEquipTypeOf_VentilatedSlab;
-    extern int const ZoneEquipTypeOf_WaterToAirHeatPump;
-    extern int const ZoneEquipTypeOf_WindowAirConditioner;
-    extern int const ZoneEquipTypeOf_BaseboardRadiantConvectiveElectric;
-    extern int const ZoneEquipTypeOf_BaseboardRadiantConvectiveWater;
-    extern int const ZoneEquipTypeOf_BaseboardRadiantConvectiveSteam;
-    extern int const ZoneEquipTypeOf_BaseboardConvectiveElectric;
-    extern int const ZoneEquipTypeOf_BaseboardConvectiveWater;
-    extern int const ZoneEquipTypeOf_HighTemperatureRadiant;
-    extern int const ZoneEquipTypeOf_DehumidifierDX;
-    extern int const ZoneEquipTypeOf_IdealLoadsAirSystem;
-    extern int const ZoneEquipTypeOf_RefrigerationChillerSet;
-    extern int const ZoneEquipTypeOf_FanZoneExhaust;
-    extern int const ZoneEquipTypeOf_WaterHeaterHeatPump;
-    extern int const ZoneEquipTypeOf_AirTerminalSingleDuctUncontrolled;
-    extern int const ZoneEquipTypeOf_AirTerminalDualDuctConstantVolume;
-    extern int const ZoneEquipTypeOf_AirTerminalDualDuctVAV;
-    extern int const ZoneEquipTypeOf_AirTerminalSingleDuctConstantVolumeReheat;
-    extern int const ZoneEquipTypeOf_AirTerminalSingleDuctConstantVolumeNoReheat;
-    extern int const ZoneEquipTypeOf_AirTerminalSingleDuctVAVReheat;
-    extern int const ZoneEquipTypeOf_AirTerminalSingleDuctVAVNoReheat;
-    extern int const ZoneEquipTypeOf_AirTerminalSingleDuctSeriesPIUReheat;
-    extern int const ZoneEquipTypeOf_AirTerminalSingleDuctParallelPIUReheat;
-    extern int const ZoneEquipTypeOf_AirTerminalSingleDuctCAVFourPipeInduction;
-    extern int const ZoneEquipTypeOf_AirTerminalSingleDuctVAVReheatVariableSpeedFan;
-    extern int const ZoneEquipTypeOf_AirTerminalSingleDuctVAVHeatAndCoolReheat;
-    extern int const ZoneEquipTypeOf_AirTerminalSingleDuctVAVHeatAndCoolNoReheat;
-    extern int const ZoneEquipTypeOf_AirTerminalSingleDuctConstantVolumeCooledBeam;
-    extern int const ZoneEquipTypeOf_AirTerminalDualDuctVAVOutdoorAir;
-    extern int const ZoneEquipTypeOf_AirLoopHVACReturnAir;
+    constexpr int ZoneEquipTypeOf_VariableRefrigerantFlow(1);
+    constexpr int ZoneEquipTypeOf_EnergyRecoveryVentilator(2);
+    constexpr int ZoneEquipTypeOf_FourPipeFanCoil(3);
+    constexpr int ZoneEquipTypeOf_OutdoorAirUnit(4);
+    constexpr int ZoneEquipTypeOf_PackagedTerminalAirConditioner(5);
+    constexpr int ZoneEquipTypeOf_PackagedTerminalHeatPump(6);
+    constexpr int ZoneEquipTypeOf_UnitHeater(7);
+    constexpr int ZoneEquipTypeOf_UnitVentilator(8);
+    constexpr int ZoneEquipTypeOf_VentilatedSlab(9);
+    constexpr int ZoneEquipTypeOf_WaterToAirHeatPump(10);
+    constexpr int ZoneEquipTypeOf_WindowAirConditioner(11);
+    constexpr int ZoneEquipTypeOf_BaseboardRadiantConvectiveElectric(12);
+    constexpr int ZoneEquipTypeOf_BaseboardRadiantConvectiveWater(13);
+    constexpr int ZoneEquipTypeOf_BaseboardRadiantConvectiveSteam(14);
+    constexpr int ZoneEquipTypeOf_BaseboardConvectiveElectric(15);
+    constexpr int ZoneEquipTypeOf_BaseboardConvectiveWater(16);
+    constexpr int ZoneEquipTypeOf_HighTemperatureRadiant(17);
+    constexpr int ZoneEquipTypeOf_DehumidifierDX(18);
+    constexpr int ZoneEquipTypeOf_IdealLoadsAirSystem(19);
+    constexpr int ZoneEquipTypeOf_RefrigerationChillerSet(20);
+    constexpr int ZoneEquipTypeOf_FanZoneExhaust(21);
+    constexpr int ZoneEquipTypeOf_WaterHeaterHeatPump(22);
+    constexpr int ZoneEquipTypeOf_AirTerminalSingleDuctUncontrolled(23);
+    constexpr int ZoneEquipTypeOf_AirTerminalDualDuctConstantVolume(24);
+    constexpr int ZoneEquipTypeOf_AirTerminalDualDuctVAV(25);
+    constexpr int ZoneEquipTypeOf_AirTerminalSingleDuctConstantVolumeReheat(26);
+    constexpr int ZoneEquipTypeOf_AirTerminalSingleDuctConstantVolumeNoReheat(27);
+    constexpr int ZoneEquipTypeOf_AirTerminalSingleDuctVAVReheat(28);
+    constexpr int ZoneEquipTypeOf_AirTerminalSingleDuctVAVNoReheat(29);
+    constexpr int ZoneEquipTypeOf_AirTerminalSingleDuctSeriesPIUReheat(30);
+    constexpr int ZoneEquipTypeOf_AirTerminalSingleDuctParallelPIUReheat(31);
+    constexpr int ZoneEquipTypeOf_AirTerminalSingleDuctCAVFourPipeInduction(32);
+    constexpr int ZoneEquipTypeOf_AirTerminalSingleDuctVAVReheatVariableSpeedFan(33);
+    constexpr int ZoneEquipTypeOf_AirTerminalSingleDuctVAVHeatAndCoolReheat(34);
+    constexpr int ZoneEquipTypeOf_AirTerminalSingleDuctVAVHeatAndCoolNoReheat(35);
+    constexpr int ZoneEquipTypeOf_AirTerminalSingleDuctConstantVolumeCooledBeam(36);
+    constexpr int ZoneEquipTypeOf_AirTerminalDualDuctVAVOutdoorAir(37);
+    constexpr int ZoneEquipTypeOf_AirLoopHVACReturnAir(38);
+
 
     // Types
 

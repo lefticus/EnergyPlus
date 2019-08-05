@@ -213,7 +213,7 @@ DIGITS( T const & )
 }
 
 template< typename T >
-inline
+constexpr
 T
 HUGE_( T const & )
 {
@@ -221,7 +221,7 @@ HUGE_( T const & )
 }
 
 template< typename T >
-inline
+constexpr
 T
 TINY( T const & )
 {
@@ -230,7 +230,7 @@ TINY( T const & )
 }
 
 template< typename T >
-inline
+constexpr
 T
 EPSILON( T const & )
 {
