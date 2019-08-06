@@ -3856,7 +3856,7 @@ namespace EnergyPlus {
             //       DATE WRITTEN   Summer 2011
             //       MODIFIED       na
             //       RE-ENGINEERED  na
-            auto &thisNeighborInfo = this->Cells(X, Y, Z).NeighborInfo[direction];
+            auto &thisNeighborInfo = this->Cells(X, Y, Z).NeighborInfo[static_cast<std::size_t>(direction)];
             thisNeighborInfo.direction = direction;
             thisNeighborInfo.ThisCentroidToNeighborWall = ThisCentroidToNeighborWall;
             thisNeighborInfo.ThisWallToNeighborCentroid = ThisWallToNeighborCentroid;
@@ -4930,7 +4930,7 @@ namespace EnergyPlus {
             resistance = (distance / 2.0) / (cell.Properties.Conductivity * cell.normalArea(direction));
             neighbortemp = this->GetFarfieldTemp(cell);
 
-            adiabaticMultiplier = cell.NeighborInfo[direction].adiabaticMultiplier;
+            adiabaticMultiplier = cell.NeighborInfo[static_cast<std::size_t>(direction)].adiabaticMultiplier;
         }
 
         Real64 Domain::GetFarfieldTemp(CartesianCell const &cell) {
@@ -6015,7 +6015,7 @@ namespace EnergyPlus {
             Real64 const ThisNormalArea = ThisCell.normalArea(CurDirection);
 
             //'set distance based on cell types
-            auto const &TempNeighborInfo = ThisCell.NeighborInfo[CurDirection];
+            auto const &TempNeighborInfo = ThisCell.NeighborInfo[static_cast<std::size_t>(CurDirection)];
             if (ThisCell.cellType == CellType::Pipe) {
                 //'we need to be a bit careful with pipes, as they are full centroid to centroid in the z direction,
                 //' but only centroid to wall in the x and y directions

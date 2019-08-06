@@ -397,7 +397,7 @@ namespace EnergyPlus {
             Real64 Z_max = 0.0;
             Point3DReal Centroid;
             CellType cellType = CellType::Unknown;
-            std::map<Direction, NeighborInformation> NeighborInfo;
+            std::array<NeighborInformation, 6> NeighborInfo{};
             CartesianPipeCellInformation PipeCellData;
 
             // Default Constructor
