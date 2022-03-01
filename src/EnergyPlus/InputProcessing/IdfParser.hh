@@ -50,7 +50,9 @@
 
 #include <string>
 
+#include "/home/jason/json2cpp/include/json2cpp/json2cpp.hpp"
 #include <nlohmann/json.hpp>
+
 #include <unordered_map>
 
 namespace EnergyPlus {
@@ -65,15 +67,15 @@ public:
 
     IdfParser() = default;
 
-    json decode(std::string_view idf, json const &schema);
+    json decode(std::string_view idf, json2cpp::json const &schema);
 
-    json decode(std::string_view idf, json const &schema, bool &success);
+    json decode(std::string_view idf, json2cpp::json const &schema, bool &success);
 
-    json decode(std::string_view idf, size_t idf_size, json const &schema);
+    json decode(std::string_view idf, size_t idf_size, json2cpp::json const &schema);
 
-    json decode(std::string_view idf, size_t idf_size, json const &schema, bool &success);
+    json decode(std::string_view idf, size_t idf_size, json2cpp::json const &schema, bool &success);
 
-    std::string encode(json const &root, json const &schema);
+    std::string encode(json const &root, json2cpp::json const &schema);
 
     std::string normalizeObjectType(std::string const &objectType);
 
@@ -108,11 +110,11 @@ private:
 
     static void decrement_both_index(size_t &index, size_t &line_index);
 
-    json parse_idf(std::string_view idf, size_t &index, bool &success, json const &schema);
+    json parse_idf(std::string_view idf, size_t &index, bool &success, json2cpp::json const &schema);
 
-    json parse_object(std::string_view idf, size_t &index, bool &success, json const &schema_loc, json const &obj_loc, int idfObjectCount);
+    json parse_object(std::string_view idf, size_t &index, bool &success, json2cpp::json const &schema_loc, json2cpp::json const &obj_loc, int idfObjectCount);
 
-    json parse_value(std::string_view idf, size_t &index, bool &success, json const &field_loc);
+    json parse_value(std::string_view idf, size_t &index, bool &success, json2cpp::json const &field_loc);
 
     // parse_number will return integer, double, or string depending on success of parsing
     // success will be false, if number cannot be converted to integer or double and string will be returned.

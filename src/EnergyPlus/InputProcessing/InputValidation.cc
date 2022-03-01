@@ -57,11 +57,13 @@
 #include <valijson/utils/nlohmann_json_utils.hpp>
 #include <valijson/validator.hpp>
 
+#include "/home/jason/json2cpp/include/json2cpp/json2cpp_adapter.hpp"
+
 using json = nlohmann::json;
 
-Validation::Validation(json const *parsed_schema)
+Validation::Validation(json2cpp::json const &parsed_schema)
+  : schema(parsed_schema)
 {
-    schema = parsed_schema;
 }
 
 bool Validation::hasErrors()
@@ -82,16 +84,16 @@ std::vector<std::string> const &Validation::warnings()
 // this is a little bit risky, since it's theoretically
 // possible that the schema could change?
 // But we're trying it to see the impact on the code
-const valijson::Schema &validation_schema(const json *schema)
+const valijson::Schema &validation_schema(const json2cpp::json *schema)
 {
-    [[maybe_unused]] static const json *last_schema = schema;
+    [[maybe_unused]] static const json2cpp::json *last_schema = schema;
 
     assert(last_schema == schema);
 
     static const std::unique_ptr<valijson::Schema> retval = [&]() {
         auto vs = std::make_unique<valijson::Schema>();
         valijson::SchemaParser parser;
-        valijson::adapters::NlohmannJsonAdapter schema_doc(*schema);
+        valijson::adapters::json2cppJsonAdapter schema_doc(*schema);
         parser.populateSchema(schema_doc, *vs);
         return vs;
     }();
@@ -110,7 +112,7 @@ bool Validation::validate(json const &parsed_input)
     valijson::Validator validator;
     valijson::adapters::NlohmannJsonAdapter doc(parsed_input);
     valijson::ValidationResults results;
-    if (!validator.validate(validation_schema(schema), doc, &results)) {
+    if (!validator.validate(validation_schema(&schema), doc, &results)) {
         valijson::ValidationResults::Error error;
         size_t max_context = 0;
         while (results.popError(error)) {

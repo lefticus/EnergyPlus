@@ -65,7 +65,7 @@
 #include <EnergyPlus/DisplayRoutines.hh>
 #include <EnergyPlus/FileSystem.hh>
 #include <EnergyPlus/InputProcessing/DataStorage.hh>
-#include <EnergyPlus/InputProcessing/EmbeddedEpJSONSchema.hh>
+//// #include <EnergyPlus/InputProcessing/EmbeddedEpJSONSchema.hh>
 #include <EnergyPlus/InputProcessing/IdfParser.hh>
 #include <EnergyPlus/InputProcessing/InputProcessor.hh>
 #include <EnergyPlus/InputProcessing/InputValidation.hh>
@@ -76,6 +76,8 @@
 #include <fmt/os.h>
 #include <milo/dtoa.h>
 #include <milo/itoa.h>
+
+#include "/home/jason/json2cpp/build/test/schema_impl.hpp"
 
 namespace EnergyPlus {
 // Module containing the input processor routines
@@ -105,27 +107,24 @@ static std::string const BlankString;
 
 using json = nlohmann::json;
 
-const json &InputProcessor::schema()
+const json2cpp::json &InputProcessor::schema()
 {
-    // avoid re-parsing embedded JSON schema by making this into a static const singleton
-    // because it is const, we don't have to worry about threading issues for creation or access
-    static const auto json_schema = json::from_cbor(EmbeddedEpJSONSchema::embeddedEpJSONSchema());
-    return json_schema;
+  return compiled_json::schema::document;
 }
 
 InputProcessor::InputProcessor() : idf_parser(std::make_unique<IdfParser>()), data(std::make_unique<DataStorage>())
 {
-    const json &loc = schema()["properties"];
+    const auto &loc = schema()["properties"];
     caseInsensitiveObjectMap.reserve(loc.size());
     for (auto it = loc.begin(); it != loc.end(); ++it) {
-        caseInsensitiveObjectMap.emplace(convertToUpper(it.key()), it.key());
+        caseInsensitiveObjectMap.emplace(convertToUpper(std::string{it.key()}), it.key());
     }
     idf_parser = std::make_unique<IdfParser>();
     data = std::make_unique<DataStorage>();
     epJSON = json::object();
     //    objectCacheMap.clear();
     //    unusedInputs.clear();
-    validation = std::make_unique<Validation>(&schema());
+    validation = std::make_unique<Validation>(schema());
 }
 
 std::unique_ptr<InputProcessor> InputProcessor::factory()
@@ -169,7 +168,7 @@ json const &InputProcessor::getFields(EnergyPlusData &state, std::string const &
     return it2.value();
 }
 
-json const &InputProcessor::getPatternProperties(EnergyPlusData &state, json const &schema_obj)
+json2cpp::json const &InputProcessor::getPatternProperties(EnergyPlusData &state, json2cpp::json const &schema_obj)
 {
     std::string pattern_property;
     auto const &pattern_properties = schema_obj["patternProperties"];
@@ -547,7 +546,7 @@ int InputProcessor::getNumObjectsFound(EnergyPlusData &state, std::string_view c
     return 0;
 }
 
-bool InputProcessor::findDefault(std::string &default_value, json const &schema_field_obj)
+bool InputProcessor::findDefault(std::string &default_value, json2cpp::json const &schema_field_obj)
 {
     auto const &find_default = schema_field_obj.find("default");
     if (find_default != schema_field_obj.end()) {
@@ -570,7 +569,7 @@ bool InputProcessor::findDefault(std::string &default_value, json const &schema_
     return false;
 }
 
-bool InputProcessor::findDefault(Real64 &default_value, json const &schema_field_obj)
+bool InputProcessor::findDefault(Real64 &default_value, json2cpp::json const &schema_field_obj)
 {
     auto const &find_default = schema_field_obj.find("default");
     default_value = 0;
@@ -625,7 +624,7 @@ bool InputProcessor::getDefaultValue(EnergyPlusData &state, std::string const &o
     return defaultFound;
 }
 
-std::string InputProcessor::getAlphaFieldValue(json const &ep_object, json const &schema_obj_props, std::string const &fieldName)
+std::string InputProcessor::getAlphaFieldValue(json const &ep_object, json2cpp::json const &schema_obj_props, std::string const &fieldName)
 {
     // Return the value of fieldName in ep_object as a string.
     // If the field is not present in ep_object then return its default if there is one, or return an empty string
@@ -652,7 +651,7 @@ std::string InputProcessor::getAlphaFieldValue(json const &ep_object, json const
     return value;
 }
 
-Real64 InputProcessor::getRealFieldValue(json const &ep_object, json const &schema_obj_props, std::string const &fieldName)
+Real64 InputProcessor::getRealFieldValue(json const &ep_object, json2cpp::json const &schema_obj_props, std::string const &fieldName)
 {
     // Return the value of fieldName in ep_object as a Real64.
     // If the field value is a string, then assum autosize and return DataGlobalConstants::AutoCalculate(-99999).
@@ -687,7 +686,7 @@ Real64 InputProcessor::getRealFieldValue(json const &ep_object, json const &sche
     return value;
 }
 
-int InputProcessor::getIntFieldValue(json const &ep_object, json const &schema_obj_props, std::string const &fieldName)
+int InputProcessor::getIntFieldValue(json const &ep_object, json2cpp::json const &schema_obj_props, std::string const &fieldName)
 {
     // Return the value of fieldName in ep_object as an integer (rounded to nearest integer if the input value is real).
     // If the field value is a string, then assume autosize or autocalulate and return DataGlobalConstants::AutoCalculate(-99999).
@@ -726,17 +725,17 @@ int InputProcessor::getIntFieldValue(json const &ep_object, json const &schema_o
     return value;
 }
 
-const json &InputProcessor::getObjectSchemaProps(EnergyPlusData &state, std::string const &objectWord)
+const json2cpp::json &InputProcessor::getObjectSchemaProps(EnergyPlusData &state, std::string const &objectWord)
 {
     auto const &schema_properties = schema().at("properties");
-    const json &object_schema = schema_properties.at(objectWord);
+    const auto &object_schema = schema_properties.at(objectWord);
     assert(!object_schema.empty()); // If this fails, the object type does not exist in the schema
 
     auto const &schema_obj_props = getPatternProperties(state, object_schema);
     return schema_obj_props;
 }
 
-std::pair<std::string, bool> InputProcessor::getObjectItemValue(std::string const &field_value, json const &schema_field_obj)
+std::pair<std::string, bool> InputProcessor::getObjectItemValue(std::string const &field_value, json2cpp::json const &schema_field_obj)
 {
     std::pair<std::string, bool> output;
     if (field_value.empty()) {
@@ -758,7 +757,7 @@ const json &InputProcessor::getObjectInstances(std::string const &ObjType)
 }
 
 InputProcessor::MaxFields InputProcessor::findMaxFields(
-    EnergyPlusData &state, json const &ep_object, std::string const &extension_key, json const &legacy_idd, std::size_t const min_fields)
+    EnergyPlusData &state, json const &ep_object, std::string const &extension_key, json2cpp::json const &legacy_idd, std::size_t const min_fields)
 {
     InputProcessor::MaxFields maxFields;
     if (!state.dataGlobal->isEpJSON) {
@@ -778,7 +777,7 @@ InputProcessor::MaxFields InputProcessor::findMaxFields(
             auto const &field_key = field.key();
             if (field_key == extension_key) continue;
             for (std::size_t i = maxFields.max_fields; i < legacy_idd_fields.size(); ++i) {
-                if (field_key == legacy_idd_fields[i]) {
+                if (field_key == legacy_idd_fields[i].get<std::string>()) {
                     maxFields.max_fields = (i + 1);
                 }
             }
@@ -796,7 +795,7 @@ InputProcessor::MaxFields InputProcessor::findMaxFields(
                     for (auto const &ext : exts.value().items()) {
                         auto const &ext_key = ext.key();
                         for (std::size_t i = max_extensible_field; i < legacy_idd_extensibles.size(); ++i) {
-                            if (ext_key == legacy_idd_extensibles[i]) {
+                            if (ext_key == legacy_idd_extensibles[i].get<std::string>()) {
                                 max_extensible_field = (i + 1);
                             }
                         }
@@ -811,9 +810,9 @@ InputProcessor::MaxFields InputProcessor::findMaxFields(
 
 void InputProcessor::setObjectItemValue(EnergyPlusData &state,
                                         json const &ep_object,
-                                        json const &ep_schema_object,
+                                        json2cpp::json const &ep_schema_object,
                                         std::string const &field,
-                                        json const &legacy_field_info,
+                                        json2cpp::json const &legacy_field_info,
                                         int &alpha_index,
                                         int &numeric_index,
                                         bool within_max_fields,
@@ -839,7 +838,7 @@ void InputProcessor::setObjectItemValue(EnergyPlusData &state,
         if (field_type == "a") {
             // process alpha value
             if (field_value.is_string()) {
-                auto const value = getObjectItemValue(field_value.get<std::string>(), schema_field_obj);
+                auto const value = getObjectItemValue(std::string{field_value.get<std::string>()}, schema_field_obj);
 
                 Alphas(alpha_index) = value.first;
                 if (is_AlphaBlank) AlphaBlank()(alpha_index) = value.second;
@@ -1002,7 +1001,7 @@ void InputProcessor::getObjectItem(EnergyPlusData &state,
     }
 
     for (size_t i = 0; i < legacy_idd_fields.size(); ++i) {
-        std::string const &field = legacy_idd_fields[i].get<std::string>();
+        auto const &field = legacy_idd_fields[i].get<std::string>();
         auto const &field_info = legacy_idd_field_info.find(field);
         auto const &field_info_val = field_info.value();
         if (field_info == legacy_idd_field_info.end()) {
@@ -1030,7 +1029,7 @@ void InputProcessor::getObjectItem(EnergyPlusData &state,
         setObjectItemValue(state,
                            obj_val,
                            schema_obj_props,
-                           field,
+                           std::string{field},
                            field_info_val,
                            alpha_index,
                            numeric_index,
@@ -1057,7 +1056,7 @@ void InputProcessor::getObjectItem(EnergyPlusData &state,
             for (auto it = epJSON_extensions_array.begin(); it != epJSON_extensions_array.end(); ++it) {
                 auto const &epJSON_extension_obj = it.value();
                 for (size_t i = 0; i < legacy_idd_extensibles.size(); i++, extensible_count++) {
-                    std::string const &field_name = legacy_idd_extensibles[i].get<std::string>();
+                    auto const &field_name = legacy_idd_extensibles[i].get<std::string>();
                     auto const &field_info = legacy_idd_field_info.find(field_name);
                     auto const &field_info_val = field_info.value();
 
@@ -1070,7 +1069,7 @@ void InputProcessor::getObjectItem(EnergyPlusData &state,
                     setObjectItemValue(state,
                                        epJSON_extension_obj,
                                        schema_extension_fields,
-                                       field_name,
+                                       std::string{field_name},
                                        field_info_val,
                                        alpha_index,
                                        numeric_index,
@@ -1413,7 +1412,7 @@ void InputProcessor::getMaxSchemaArgs(int &NumArgs, int &NumAlpha, int &NumNumer
         int num_alpha = 0;
         int num_numeric = 0;
 
-        const json &legacy_idd = schema_properties.at(object.key()).at("legacy_idd");
+        const auto &legacy_idd = schema_properties.at(object.key()).at("legacy_idd");
         auto key = legacy_idd.find("extension");
         if (key != legacy_idd.end()) {
             extension_key = key.value().get<std::string>();
@@ -1430,7 +1429,7 @@ void InputProcessor::getMaxSchemaArgs(int &NumArgs, int &NumAlpha, int &NumNumer
 
         auto const &find_alphas = legacy_idd.find("alphas");
         if (find_alphas != legacy_idd.end()) {
-            json const &alphas = find_alphas.value();
+            auto const &alphas = find_alphas.value();
             auto const &find_fields = alphas.find("fields");
             if (find_fields != alphas.end()) {
                 num_alpha += find_fields.value().size();
@@ -1440,7 +1439,7 @@ void InputProcessor::getMaxSchemaArgs(int &NumArgs, int &NumAlpha, int &NumNumer
             }
         }
         if (legacy_idd.find("numerics") != legacy_idd.end()) {
-            json const &numerics = legacy_idd["numerics"];
+            auto const &numerics = legacy_idd["numerics"];
             if (numerics.find("fields") != numerics.end()) {
                 num_numeric += numerics["fields"].size();
             }
@@ -1470,7 +1469,7 @@ void InputProcessor::getObjectDefMaxArgs(EnergyPlusData &state,
     NumArgs = 0;
     NumAlpha = 0;
     NumNumeric = 0;
-    const json *object;
+    const json2cpp::json *object = nullptr;
     if (schema()["properties"].find(std::string(ObjectWord)) == schema()["properties"].end()) {
         auto tmp_umit = caseInsensitiveObjectMap.find(convertToUpper(std::string(ObjectWord)));
         if (tmp_umit == caseInsensitiveObjectMap.end()) {
@@ -1481,7 +1480,7 @@ void InputProcessor::getObjectDefMaxArgs(EnergyPlusData &state,
     } else {
         object = &schema()["properties"][std::string(ObjectWord)];
     }
-    const json &legacy_idd = object->at("legacy_idd");
+    const auto &legacy_idd = object->at("legacy_idd");
 
     json *objects;
     if (epJSON.find(std::string(ObjectWord)) == epJSON.end()) {
@@ -1511,7 +1510,7 @@ void InputProcessor::getObjectDefMaxArgs(EnergyPlusData &state,
     }
 
     if (legacy_idd.find("alphas") != legacy_idd.end()) {
-        json const alphas = legacy_idd["alphas"];
+        const auto &alphas = legacy_idd["alphas"];
         if (alphas.find("fields") != alphas.end()) {
             NumAlpha += alphas["fields"].size();
         }
@@ -1520,7 +1519,7 @@ void InputProcessor::getObjectDefMaxArgs(EnergyPlusData &state,
         }
     }
     if (legacy_idd.find("numerics") != legacy_idd.end()) {
-        json const numerics = legacy_idd["numerics"];
+        const auto &numerics = legacy_idd["numerics"];
         if (numerics.find("fields") != numerics.end()) {
             NumNumeric += numerics["fields"].size();
         }
@@ -1559,7 +1558,7 @@ void InputProcessor::reportIDFRecordsStats(EnergyPlusData &state)
     auto const &schema_properties = schema().at("properties");
 
     // Lambda to avoid repeating code twice (when processing regular fields, and extensible fields)
-    auto processField = [&state](const std::string &field, const json &epJSONObj, const json &schema_field_obj) {
+    auto processField = [&state](const std::string_view field, const json &epJSONObj, const json2cpp::json &schema_field_obj) {
         bool hasDefault = false;
         bool canBeAutosized = false;
         bool canBeAutocalculated = false;
@@ -1600,7 +1599,7 @@ void InputProcessor::reportIDFRecordsStats(EnergyPlusData &state)
         }
 
         // Locate the field in the ep_object
-        auto it = epJSONObj.find(field);
+        auto it = epJSONObj.find(std::string{field});
         if (it != epJSONObj.end()) { // && !it.value().empty()) {
             // Found it: check if Autosized or Autocalculated
             auto const &field_value = it.value();
@@ -1632,7 +1631,7 @@ void InputProcessor::reportIDFRecordsStats(EnergyPlusData &state)
         auto const &objectType = epJSON_iter.key();
         auto const &objects = epJSON_iter.value();
 
-        const json &object_schema = schema_properties.at(objectType);
+        const auto &object_schema = schema_properties.at(objectType);
 
         // Locations in JSON schema relating to normal fields
         auto const &schema_obj_props = getPatternProperties(state, object_schema);
@@ -1658,7 +1657,7 @@ void InputProcessor::reportIDFRecordsStats(EnergyPlusData &state)
             // Loop on all regular fields
             for (size_t i = 0; i < legacy_idd_fields.size(); ++i) {
 
-                std::string const &field = legacy_idd_fields[i].get<std::string>();
+                auto const &field = std::string{legacy_idd_fields[i].get<std::string>()};
 
                 // This is weird, but some objects like Building have a Name default... and it's not in the patternProperties
                 if (has_idd_name_field && field == "name") {
@@ -1690,7 +1689,7 @@ void InputProcessor::reportIDFRecordsStats(EnergyPlusData &state)
                     for (auto it = epJSON_extensions_array.begin(); it != epJSON_extensions_array.end(); ++it) {
                         auto const &epJSON_extension_obj = it.value();
                         for (size_t i = 0; i < legacy_idd_extensibles.size(); ++i) {
-                            std::string const &field = legacy_idd_extensibles[i].get<std::string>();
+                            auto const &field = legacy_idd_extensibles[i].get<std::string>();
                             auto const &schema_extension_field_obj = schema_extension_fields[field];
 
                             processField(field, epJSON_extension_obj, schema_extension_field_obj);

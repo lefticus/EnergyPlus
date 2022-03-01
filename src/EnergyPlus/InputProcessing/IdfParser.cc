@@ -60,24 +60,24 @@ auto const icompare = [](std::string_view a, std::string_view b) {
                 : false);
 };
 
-json IdfParser::decode(std::string_view idf, json const &schema)
+json IdfParser::decode(std::string_view idf, json2cpp::json const &schema)
 {
     bool success = true;
     return decode(idf, idf.size(), schema, success);
 }
 
-json IdfParser::decode(std::string_view idf, json const &schema, bool &success)
+json IdfParser::decode(std::string_view idf, json2cpp::json const &schema, bool &success)
 {
     return decode(idf, idf.size(), schema, success);
 }
 
-json IdfParser::decode(std::string_view idf, size_t _idf_size, json const &schema)
+json IdfParser::decode(std::string_view idf, size_t _idf_size, json2cpp::json const &schema)
 {
     bool success = true;
     return decode(idf, _idf_size, schema, success);
 }
 
-json IdfParser::decode(std::string_view idf, size_t _idf_size, json const &schema, bool &success)
+json IdfParser::decode(std::string_view idf, size_t _idf_size, json2cpp::json const &schema, bool &success)
 {
     success = true;
     cur_line_num = 1;
@@ -94,7 +94,7 @@ json IdfParser::decode(std::string_view idf, size_t _idf_size, json const &schem
     return parse_idf(idf, index, success, schema);
 }
 
-std::string IdfParser::encode(json const &root, json const &schema)
+std::string IdfParser::encode(json const &root, json2cpp::json const &schema)
 {
     static constexpr std::string_view end_of_field(",\n  ", 4);
     static constexpr std::string_view end_of_object(";\n\n", 3);
@@ -117,7 +117,7 @@ std::string IdfParser::encode(json const &root, json const &schema)
             encoded += obj.key();
             size_t skipped_fields = 0;
             for (size_t i = 0; i < legacy_idd_field.size(); i++) {
-                std::string const &entry = legacy_idd_field[i].get<std::string>();
+                const std::string entry{legacy_idd_field[i].get<std::string>()};
                 if (obj_in.value().find(entry) == obj_in.value().end()) {
                     if (entry == "name")
                         encoded += std::string{end_of_field} + obj_in.key();
@@ -129,7 +129,7 @@ std::string IdfParser::encode(json const &root, json const &schema)
                     encoded += end_of_field;
                 skipped_fields = 0;
                 encoded += end_of_field;
-                auto const &val = obj_in.value()[entry];
+                auto const &val = obj_in.value()[std::string{entry}];
                 if (val.is_string()) {
                     encoded += val.get<std::string>();
                 } else {
@@ -148,7 +148,7 @@ std::string IdfParser::encode(json const &root, json const &schema)
                 auto const &cur_extension_obj = extensions[extension_i];
                 auto const &extensible = schema["properties"][obj.key()]["legacy_idd"]["extensibles"];
                 for (size_t i = 0; i < extensible.size(); i++) {
-                    std::string const &tmp = extensible[i].get<std::string>();
+                    const std::string tmp{extensible[i].get<std::string_view>()};
                     if (cur_extension_obj.find(tmp) == cur_extension_obj.end()) {
                         skipped_fields++;
                         continue;
@@ -197,7 +197,7 @@ bool IdfParser::hasErrors()
     return !errors_.empty();
 }
 
-json IdfParser::parse_idf(std::string_view idf, size_t &index, bool &success, json const &schema)
+json IdfParser::parse_idf(std::string_view idf, size_t &index, bool &success, json2cpp::json const &schema)
 {
     json root;
     Token token;
@@ -205,7 +205,7 @@ json IdfParser::parse_idf(std::string_view idf, size_t &index, bool &success, js
 
     objectTypeMap.reserve(schema_properties.size());
     for (auto it = schema_properties.begin(); it != schema_properties.end(); ++it) {
-        std::string key = convertToUpper(it.key());
+        std::string key = convertToUpper(std::string{it.key()});
         objectTypeMap.emplace(std::move(key), it.key());
     }
 
@@ -247,8 +247,8 @@ json IdfParser::parse_idf(std::string_view idf, size_t &index, bool &success, js
             }
 
             bool object_success = true;
-            json const &obj_loc = schema_properties[obj_name];
-            json const &legacy_idd = obj_loc["legacy_idd"];
+            json2cpp::json const &obj_loc = schema_properties[obj_name];
+            json2cpp::json const &legacy_idd = obj_loc["legacy_idd"];
             json obj = parse_object(idf, index, object_success, legacy_idd, obj_loc, idfObjectCount);
             if (!object_success) {
                 auto found_index = idf.find_first_of('\n', beginning_of_line_index);
@@ -294,7 +294,7 @@ json IdfParser::parse_idf(std::string_view idf, size_t &index, bool &success, js
 }
 
 json IdfParser::parse_object(
-    std::string_view idf, size_t &index, bool &success, json const &legacy_idd, json const &schema_obj_loc, int idfObjectCount)
+    std::string_view idf, size_t &index, bool &success, json2cpp::json const &legacy_idd, json2cpp::json const &schema_obj_loc, int idfObjectCount)
 {
     json root = json::object();
     json extensible = json::object();
@@ -322,7 +322,7 @@ json IdfParser::parse_object(
     auto const &schema_obj_props = schema_patternProperties[patternProperty]["properties"];
     auto key = legacy_idd.find("extension");
 
-    json const *schema_obj_extensions = nullptr;
+    json2cpp::json const *schema_obj_extensions = nullptr;
     if (legacy_idd_extensibles_iter != legacy_idd.end()) {
         if (key == legacy_idd.end()) {
             errors_.emplace_back("\"extension\" key not found in schema. Need to add to list in modify_schema.py.");
@@ -406,10 +406,10 @@ json IdfParser::parse_object(
             }
             auto const &legacy_idd_extensibles_array = legacy_idd_extensibles_iter.value();
             auto const size = legacy_idd_extensibles_array.size();
-            std::string const &field_name = legacy_idd_extensibles_array[extensible_index % size].get<std::string>();
+            auto const &field_name = legacy_idd_extensibles_array[extensible_index % size].get<std::string>();
             auto val = parse_value(idf, index, success, schema_obj_extensions->at(field_name));
             if (!success) return root;
-            extensible[field_name] = std::move(val);
+            extensible[std::string{field_name}] = std::move(val);
             was_value_parsed = true;
             extensible_index++;
             if (extensible_index && extensible_index % size == 0) {
@@ -418,11 +418,11 @@ json IdfParser::parse_object(
             }
         } else {
             was_value_parsed = true;
-            std::string const &field = legacy_idd_fields_array[legacy_idd_index].get<std::string>();
+            auto const &field = legacy_idd_fields_array[legacy_idd_index].get<std::string>();
             auto const &find_field_iter = schema_obj_props.find(field);
             if (find_field_iter == schema_obj_props.end()) {
                 if (field == "name") {
-                    root[field] = parse_string(idf, index);
+                    root[std::string{field}] = parse_string(idf, index);
                 } else {
                     u64toa(cur_line_num, s);
                     errors_.emplace_back(fmt::format("Line: {} - Field \"{}\" was not found.", s, field));
@@ -430,7 +430,7 @@ json IdfParser::parse_object(
             } else {
                 auto val = parse_value(idf, index, success, find_field_iter.value());
                 if (!success) return root;
-                root[field] = std::move(val);
+                root[std::string{field}] = std::move(val);
             }
             if (!success) return root;
         }
@@ -532,12 +532,31 @@ json IdfParser::parse_number(std::string_view idf, size_t &index)
     return convert_int(value);
 }
 
-json IdfParser::parse_value(std::string_view idf, size_t &index, bool &success, json const &field_loc)
+json to_json(const json2cpp::json &obj)
+{
+  if (obj.is_number_signed()) {
+    return obj.get<std::int64_t>();
+  } else if (obj.is_number_unsigned()) {
+    return obj.get<std::uint64_t>();
+  } else if (obj.is_boolean()) {
+    return obj.get<bool>();
+  } else if (obj.is_number_float()) {
+    return obj.get<double>();
+  } else if (obj.is_string()) {
+    return std::string{obj.get<std::string_view>()};
+  } else {
+    throw std::runtime_error("unknown type to convert from");
+  }
+
+}
+
+
+json IdfParser::parse_value(std::string_view idf, size_t &index, bool &success, json2cpp::json const &field_loc)
 {
     Token token;
     auto const &field_type = field_loc.find("type");
     if (field_type != field_loc.end()) {
-        if (field_type.value() == "number" || field_type.value() == "integer") {
+        if (field_type.value().get<std::string_view>() == "number" || field_type.value().get<std::string_view>() == "integer") {
             token = Token::Num;
         } else {
             token = Token::STRING;
@@ -569,9 +588,9 @@ json IdfParser::parse_value(std::string_view idf, size_t &index, bool &success, 
             // The following is hacky because it abuses knowing the consistent generated structure
             // in the future this might not hold true for the array indexes.
             if (default_it != field_loc.end()) {
-                return field_loc.at("anyOf")[1]["enum"][1];
+                return to_json(field_loc.at("anyOf")[1]["enum"][1]);
             } else {
-                return field_loc.at("anyOf")[1]["enum"][0];
+                return to_json(field_loc.at("anyOf")[1]["enum"][0]);
             }
         }
         return parsed_string;

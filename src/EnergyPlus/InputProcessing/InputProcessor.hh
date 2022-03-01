@@ -70,6 +70,8 @@
 #include <EnergyPlus/InputProcessing/IdfParser.hh>
 #include <EnergyPlus/InputProcessing/InputValidation.hh>
 
+#include "/home/jason/json2cpp/include/json2cpp/json2cpp.hpp"
+
 class IdfParser;
 class Validation;
 struct EnergyPlusData;
@@ -119,23 +121,23 @@ public:
 
     int getNumObjectsFound(EnergyPlusData &state, std::string_view const &ObjectWord);
 
-    bool findDefault(std::string &default_value, json const &schema_field_obj);
+    bool findDefault(std::string &default_value, json2cpp::json const &schema_field_obj);
 
-    bool findDefault(Real64 &default_value, json const &schema_field_obj);
+    bool findDefault(Real64 &default_value, json2cpp::json const &schema_field_obj);
 
     bool getDefaultValue(EnergyPlusData &state, std::string const &objectWord, std::string const &fieldName, Real64 &value);
 
     bool getDefaultValue(EnergyPlusData &state, std::string const &objectWord, std::string const &fieldName, std::string &value);
 
-    std::string getAlphaFieldValue(json const &ep_object, json const &schema_obj_props, std::string const &fieldName);
+    std::string getAlphaFieldValue(json const &ep_object, json2cpp::json const &schema_obj_props, std::string const &fieldName);
 
-    Real64 getRealFieldValue(json const &ep_object, json const &schema_obj_props, std::string const &fieldName);
+    Real64 getRealFieldValue(json const &ep_object, json2cpp::json const &schema_obj_props, std::string const &fieldName);
 
-    int getIntFieldValue(json const &ep_object, json const &schema_obj_props, std::string const &fieldName);
+    int getIntFieldValue(json const &ep_object, json2cpp::json const &schema_obj_props, std::string const &fieldName);
 
-    const json &getObjectSchemaProps(EnergyPlusData &state, std::string const &objectWord);
+    const json2cpp::json &getObjectSchemaProps(EnergyPlusData &state, std::string const &objectWord);
 
-    std::pair<std::string, bool> getObjectItemValue(std::string const &field_value, json const &schema_field_obj);
+    std::pair<std::string, bool> getObjectItemValue(std::string const &field_value, json2cpp::json const &schema_field_obj);
 
     void getObjectItem(EnergyPlusData &state,
                        std::string_view Object,
@@ -244,17 +246,17 @@ private:
     {
         ObjectCache() = default;
 
-        ObjectCache(json::const_iterator const &schemaIterator, std::vector<json::const_iterator> const &inputObjectIterators)
+        ObjectCache(json2cpp::json::const_iterator const &schemaIterator, std::vector<json::const_iterator> const &inputObjectIterators)
             : schemaIterator(schemaIterator), inputObjectIterators(inputObjectIterators)
         {
         }
 
-        ObjectCache(json::const_iterator &&schemaIterator, std::vector<json::const_iterator> &&inputObjectIterators)
-            : schemaIterator(schemaIterator), inputObjectIterators(inputObjectIterators)
+        ObjectCache(json2cpp::json::const_iterator &&schemaIterator, std::vector<json::const_iterator> &&inputObjectIterators)
+            : schemaIterator(std::move(schemaIterator)), inputObjectIterators(std::move(inputObjectIterators))
         {
         }
 
-        json::const_iterator schemaIterator;
+        json2cpp::json::const_iterator schemaIterator;
         std::vector<json::const_iterator> inputObjectIterators;
     };
 
@@ -266,13 +268,13 @@ private:
     };
 
     MaxFields findMaxFields(
-        EnergyPlusData &state, json const &ep_object, std::string const &extension_key, json const &legacy_idd, std::size_t const min_fields);
+        EnergyPlusData &state, json const &ep_object, std::string const &extension_key, json2cpp::json const &legacy_idd, std::size_t const min_fields);
 
     void setObjectItemValue(EnergyPlusData &state,
                             json const &ep_object,
-                            json const &ep_schema_object,
+                            json2cpp::json const &ep_schema_object,
                             std::string const &field,
-                            json const &legacy_field_info,
+                            json2cpp::json const &legacy_field_info,
                             int &alpha_index,
                             int &numeric_index,
                             bool within_max_fields,
@@ -301,7 +303,7 @@ private:
 
     json const &getFields(EnergyPlusData &state, std::string const &objectType);
 
-    json const &getPatternProperties(EnergyPlusData &state, json const &schema_obj);
+    json2cpp::json const &getPatternProperties(EnergyPlusData &state, json2cpp::json const &schema_obj);
 
     inline std::string convertToUpper(std::string s)
     {
@@ -320,7 +322,7 @@ private:
     std::unique_ptr<IdfParser> idf_parser;
     std::unique_ptr<Validation> validation;
     std::unique_ptr<DataStorage> data;
-    static const json &schema();
+    static const json2cpp::json &schema();
 
 public:
     json epJSON;

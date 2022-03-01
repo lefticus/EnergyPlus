@@ -273,8 +273,8 @@ target_include_directories(project_options INTERFACE ${PROJECT_SOURCE_DIR}/third
 target_include_directories(project_options INTERFACE "${kiva_BINARY_DIR}/src/libkiva")
 target_include_directories(project_options SYSTEM INTERFACE "${kiva_SOURCE_DIR}/vendor/boost-1.61.0/")
 
-add_subdirectory(scripts/dev/generate_embeddable_epJSON_schema)
-set_target_properties(generate_embeddedable_epJSON_schema PROPERTIES FOLDER "Internal")
+#add_subdirectory(scripts/dev/generate_embeddable_epJSON_schema)
+#set_target_properties(generate_embeddedable_epJSON_schema PROPERTIES FOLDER "Internal")
 
 target_include_directories(project_options INTERFACE ${PROJECT_SOURCE_DIR}/third_party/cpgfunctionEP)
 target_include_directories(project_options INTERFACE ${PROJECT_SOURCE_DIR}/third_party/cpgfunctionEP/include)
@@ -312,7 +312,7 @@ configure_file("workflows/transition.py" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/work
 # of course E+ itself
 add_subdirectory(src/EnergyPlus)
 set_target_properties(airflownetworklib PROPERTIES FOLDER "Internal")
-set_target_properties(GenerateEmbeddedEpJSONSchema PROPERTIES FOLDER "Internal")
+#set_target_properties(GenerateEmbeddedEpJSONSchema PROPERTIES FOLDER "Internal")
 set_target_properties(energyplusparser PROPERTIES FOLDER "Internal")
 
 if(BUILD_TESTING)

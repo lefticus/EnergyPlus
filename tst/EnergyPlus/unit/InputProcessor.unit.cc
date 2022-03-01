@@ -4449,10 +4449,9 @@ TEST_F(InputProcessorFixture, epJSONgetFieldValue_fromJSON)
     ip->initializeMaps();
     std::string alphaFieldValue;
     Real64 numericFieldValue = 0.0;
-    json objectSchemaProps;
 
     // Building object
-    objectSchemaProps = ip->getObjectSchemaProps(*state, obj_type1);
+    json2cpp::json objectSchemaProps = ip->getObjectSchemaProps(*state, obj_type1);
     // User inputs from above
     // Note even though choice keys are case-sensitive during epJSON processing, getFieldValue pushes Alphas to UPPERcase
     alphaFieldValue = ip->getAlphaFieldValue(bldg1, objectSchemaProps, "terrain");
@@ -4508,10 +4507,9 @@ TEST_F(InputProcessorFixture, epJSONgetFieldValue_AutosizefromJSON)
     ip->initializeMaps();
     std::string alphaFieldValue;
     Real64 numericFieldValue = 0.0;
-    json objectSchemaProps;
 
     // Water heater object
-    objectSchemaProps = ip->getObjectSchemaProps(*state, obj_type1);
+    json2cpp::json objectSchemaProps = ip->getObjectSchemaProps(*state, obj_type1);
     // User inputs from above
     // If the field is autosizable and alpha input will return -99999
     numericFieldValue = ip->getRealFieldValue(wh1, objectSchemaProps, "tank_volume");
@@ -4573,12 +4571,11 @@ TEST_F(InputProcessorFixture, epJSONgetFieldValue_fromIDF)
     state->dataGlobal->isEpJSON = false;
     std::string alphaFieldValue;
     Real64 numericFieldValue = 0.0;
-    json objectSchemaProps;
 
     // Water heater object
     auto &ip(state->dataInputProcessing->inputProcessor);
     std::string obj_type1 = "WaterHeater:Mixed";
-    objectSchemaProps = ip->getObjectSchemaProps(*state, obj_type1);
+    json2cpp::json objectSchemaProps = ip->getObjectSchemaProps(*state, obj_type1);
     auto instances = ip->epJSON.find(obj_type1);
     if (instances != ip->epJSON.end()) {
         // globalSolverObject.referenceConditions.clear();
@@ -4638,12 +4635,11 @@ TEST_F(InputProcessorFixture, epJSONgetFieldValue_extensiblesFromIDF)
     ASSERT_TRUE(process_idf(idf_objects));
     state->dataGlobal->isEpJSON = false;
     std::string alphaFieldValue;
-    json objectSchemaProps;
 
     // Water heater object
     auto &ip(state->dataInputProcessing->inputProcessor);
     std::string obj_type1 = "ZoneHVAC:EquipmentList";
-    objectSchemaProps = ip->getObjectSchemaProps(*state, obj_type1);
+    json2cpp::json objectSchemaProps = ip->getObjectSchemaProps(*state, obj_type1);
     auto instances = ip->epJSON.find(obj_type1);
     if (instances != ip->epJSON.end()) {
         // globalSolverObject.referenceConditions.clear();

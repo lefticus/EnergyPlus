@@ -141,7 +141,7 @@ protected:
         return idfParser.parse_value(idf, index, success, state->dataInputProcessing->inputProcessor->schema()["properties"]);
     }
 
-    json parse_value(std::string const &idf, size_t &index, bool &success, json const &field_loc)
+    json parse_value(std::string const &idf, size_t &index, bool &success, json2cpp::json const &field_loc)
     {
         IdfParser idfParser;
         idfParser.idf_size = idf.size();
@@ -169,14 +169,14 @@ protected:
         return idfParser.next_token(idf, index);
     }
 
-    json parse_idf(std::string const &idf, size_t &index, bool &success, json const &schema)
+    json parse_idf(std::string const &idf, size_t &index, bool &success, json2cpp::json const &schema)
     {
         IdfParser idfParser;
         idfParser.idf_size = idf.size();
         return idfParser.parse_idf(idf, index, success, schema);
     }
 
-    json parse_object(std::string const &idf, size_t &index, bool &success, json const &schema_loc, json const &obj_loc, int idfObjectCount)
+    json parse_object(std::string const &idf, size_t &index, bool &success, json2cpp::json const &schema_loc, json2cpp::json const &obj_loc, int idfObjectCount)
     {
         IdfParser idfParser;
         idfParser.idf_size = idf.size();

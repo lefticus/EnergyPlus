@@ -52,13 +52,14 @@
 #include <vector>
 
 #include <nlohmann/json.hpp>
+#include "/home/jason/json2cpp/include/json2cpp/json2cpp.hpp"
 
 class Validation
 {
 public:
     using json = nlohmann::json;
 
-    explicit Validation(json const *parsed_schema);
+    explicit Validation(json2cpp::json const &parsed_schema);
 
     bool validate(json const &parsed_input);
 
@@ -69,7 +70,7 @@ public:
     std::vector<std::string> const &warnings();
 
 private:
-    json const *schema;
+    json2cpp::json const &schema;
     std::vector<std::string> errors_;
     std::vector<std::string> warnings_;
 };

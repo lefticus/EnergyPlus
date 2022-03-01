@@ -53,11 +53,14 @@
 
 #include "EnergyPlus/DataStringGlobals.hh"
 #include "EnergyPlus/FileSystem.hh"
-#include "EnergyPlus/InputProcessing/EmbeddedEpJSONSchema.hh"
+//#include "EnergyPlus/InputProcessing/EmbeddedEpJSONSchema.hh"
 #include "EnergyPlus/InputProcessing/IdfParser.hh"
 #include "EnergyPlus/InputProcessing/InputValidation.hh"
 #include <ezOptionParser.hpp>
 #include <nlohmann/json.hpp>
+
+#include "/home/jason/json2cpp/build/test/schema_impl.hpp"
+
 
 using json = nlohmann::json;
 
@@ -261,13 +264,13 @@ void cleanEPJSON(json &epjson)
 }
 
 bool processInput(std::string const &inputFilePath,
-                  json const &schema,
+                  json2cpp::json const &schema,
                   OutputTypes outputType,
                   fs::path outputDirPath,
                   std::string &outputTypeStr,
                   bool convertHVACTemplate)
 {
-    auto validation(std::make_unique<Validation>(&schema));
+    auto validation(std::make_unique<Validation>(schema));
     auto idf_parser(std::make_unique<IdfParser>());
     json epJSON;
 
@@ -585,8 +588,7 @@ int main(int argc, const char *argv[])
         return 1;
     }
 
-    auto const embeddedEpJSONSchema = EnergyPlus::EmbeddedEpJSONSchema::embeddedEpJSONSchema();
-    auto schema = json::from_cbor(embeddedEpJSONSchema);
+    const auto schema = compiled_json::schema::document;
 
     int number_files = static_cast<int>(files.size());
     std::size_t fileCount = 0;
@@ -596,7 +598,7 @@ int main(int argc, const char *argv[])
 #endif
 
 #ifdef _OPENMP
-#pragma omp parallel default(none) shared(files, number_files, fileCount, schema, outputType, outputTypeStr, output_directory, convertHVACTemplate)
+#pragma omp parallel default(none) shared(files, number_files, fileCount, outputType, outputTypeStr, output_directory, convertHVACTemplate)
     {
 #pragma omp for
         for (int i = 0; i < number_files; ++i) {
