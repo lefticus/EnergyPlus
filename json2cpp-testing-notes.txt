@@ -1,0 +1,396 @@
+Pre-json2cpp -O3, unstripped
+
+lrwxrwxrwx 1 jason jason        17 Mar  1 09:31 Products/energyplus -> energyplus-22.1.0
+-rwxrwxr-x 1 jason jason     29488 Mar  1 09:31 Products/energyplus-22.1.0
+-rwxrwxr-x 1 jason jason  28314128 Mar  1 09:39 Products/energyplus_tests
+lrwxrwxrwx 1 jason jason        26 Mar  1 09:30 Products/libenergyplusapi.so -> libenergyplusapi.so.22.1.0
+-rwxrwxr-x 1 jason jason  58593584 Mar  1 09:30 Products/libenergyplusapi.so.22.1.0
+-rw-rw-r-- 1 jason jason 112198910 Mar  1 09:29 Products/libenergypluslib.a
+-rw-rw-r-- 1 jason jason   5926038 Mar  1 09:20 Products/libenergyplusparser.a
+
+------
+
+-- ctest -j10
+
+99% tests passed, 2 tests failed out of 2415
+
+Total Test time (real) = 387.87 sec
+
+The following tests FAILED:
+	572 - integration.SingleFamilyHouse_HP_Slab (Failed)
+	573 - integration.SingleFamilyHouse_HP_Slab_Dehumidification (Failed)
+Errors while running CTest
+
+------
+
+-- ./Products/energyplus-tests
+
+  YOU HAVE 12 DISABLED TESTS
+
+118.95user 51.83system 2:50.82elapsed 99%CPU (0avgtext+0avgdata 407504maxresident)k
+24inputs+5656outputs (0major+38970989minor)pagefaults 0swaps
+
+
+------
+
+- /usr/bin/time ./Products/energyplus -w ../lefticus-EP/weather/USA_CO_Boulder_TMY2.epw ../lefticus-EP/testfiles/5ZoneAirCooled.idf
+
+EnergyPlus Run Time=00hr 00min  9.97sec
+EnergyPlus Completed Successfully.
+10.04user 0.14system 0:10.18elapsed 100%CPU (0avgtext+0avgdata 218324maxresident)k
+0inputs+23904outputs (0major+45893minor)pagefaults 0swaps
+
+------
+
+- After stripping:
+
+lrwxrwxrwx 1 jason jason       17 Mar  1 09:31 Products/energyplus -> energyplus-22.1.0
+-rwxrwxr-x 1 jason jason    22672 Mar  1 11:27 Products/energyplus-22.1.0
+-rwxrwxr-x 1 jason jason 24296688 Mar  1 11:27 Products/energyplus_tests
+lrwxrwxrwx 1 jason jason       26 Mar  1 09:30 Products/libenergyplusapi.so -> libenergyplusapi.so.22.1.0
+-rwxrwxr-x 1 jason jason 54427336 Mar  1 11:27 Products/libenergyplusapi.so.22.1.0
+-rw-rw-r-- 1 jason jason 62947228 Mar  1 11:27 Products/libenergypluslib.a
+-rw-rw-r-- 1 jason jason  5113842 Mar  1 11:27 Products/libenergyplusparser.a
+
+
+------
+
+- valgrind --tool=callgrind ./Products/energyplus -w ../lefticus-EP/weather/USA_CO_Boulder_TMY2.epw ../lefticus-EP/testfiles/5ZoneAirCooled.idf
+
+
+==64765== 
+==64765== Events    : Ir
+==64765== Collected : 40918898741
+==64765== 
+==64765== I   refs:      40,918,898,741
+
+
+calls to malloc: 3060813
+calls to new:    3060715
+
+
+
+-------
+
+- bloaty with debug info
+
+jason  jason-virtual-machine  ~  bloaty  build  master  ?  $  ./bloaty ../../ep-build/Products/energyplus
+    FILE SIZE        VM SIZE    
+ --------------  -------------- 
+  60.5%  1.11Mi   0.0%       0    .debug_str
+  34.4%   647Ki   0.0%       0    .debug_info
+   1.5%  28.1Ki   0.0%       0    .debug_loc
+   1.1%  21.6Ki   0.0%       0    .debug_line
+   0.4%  8.44Ki   0.0%       0    .debug_abbrev
+   0.4%  7.05Ki   0.0%       0    .debug_ranges
+   0.3%  5.99Ki  35.6%  5.99Ki    .text
+   0.2%  3.60Ki   0.0%       0    [Unmapped]
+   0.2%  3.41Ki   0.0%       0    .strtab
+   0.2%  3.26Ki   0.0%       0    .symtab
+   0.1%  2.81Ki  16.7%  2.81Ki    .dynstr
+   0.1%  2.38Ki  13.9%  2.34Ki    [21 Others]
+   0.1%  2.38Ki   0.0%       0    [ELF Section Headers]
+   0.1%  1.64Ki   9.8%  1.64Ki    .dynsym
+   0.1%  1.19Ki   7.1%  1.19Ki    .eh_frame
+   0.1%    1008   5.9%    1008    .rela.dyn
+   0.0%     560   3.3%     560    .dynamic
+   0.0%     504   2.9%     504    [ELF Program Headers]
+   0.0%     432   2.5%     432    .rela.plt
+   0.0%     400   2.3%     400    .rodata
+   0.0%     384   0.0%       0    .debug_aranges
+ 100.0%  1.84Mi 100.0%  16.8Ki    TOTAL
+
+ jason  jason-virtual-machine  ~  bloaty  build  master  ?  $  ./bloaty ../../ep-build/Products/libenergyplusapi.so
+    FILE SIZE        VM SIZE    
+ --------------  -------------- 
+  49.6%   346Mi   0.0%       0    .debug_info
+  25.5%   177Mi   0.0%       0    .debug_loc
+   7.7%  53.7Mi   0.0%       0    .debug_str
+   6.0%  42.0Mi   0.0%       0    .debug_ranges
+   5.0%  34.6Mi  50.9%  34.6Mi    .text
+   2.7%  19.2Mi   0.0%       0    .debug_line
+   0.0%       0  23.8%  16.2Mi    .bss
+   1.3%  9.30Mi  13.7%  9.30Mi    .rodata
+   0.4%  3.01Mi   0.0%       0    .strtab
+   0.4%  2.71Mi   0.0%       0    .debug_abbrev
+   0.3%  2.37Mi   3.5%  2.37Mi    .dynstr
+   0.2%  1.31Mi   1.9%  1.31Mi    .eh_frame
+   0.2%  1.21Mi   1.8%  1.21Mi    .gcc_except_table
+   0.1%   983Ki   0.0%       0    .symtab
+   0.1%   945Ki   1.4%   945Ki    .rela.dyn
+   0.1%   733Ki   1.1%   733Ki    .dynsym
+   0.1%   627Ki   0.9%   620Ki    [23 Others]
+   0.1%   603Ki   0.0%       0    .debug_aranges
+   0.0%   351Ki   0.5%   351Ki    .data.rel.ro
+   0.0%   270Ki   0.4%   270Ki    .rela.plt
+   0.0%   216Ki   0.3%   216Ki    .gnu.hash
+ 100.0%   697Mi 100.0%  68.1Mi    TOTAL
+
+
+
+------
+
+- simple timing data
+
+1.19user 0.13system 0:01.32elapsed 99%CPU (0avgtext+0avgdata 213292maxresident)k
+0inputs+6672outputs (0major+45694minor)pagefaults 0swaps
+ jason  jason-virtual-machine  ~  ep-build  $  /usr/bin/time  ./Products/energyplus -w ../lefticus-EP/weather/USA_CO_Boulder_TMY2.epw ../lefticus-EP/testfiles/1ZoneUncontrolled.idf 
+
+
+-----
+
+- cache and branch sim
+
+==86878== 
+==86878== Events    : Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw Bc Bcm Bi Bim
+==86878== Collected : 4814360456 1442531112 789317181 117196277 105820366 26264492 53274 1889400 6328052 779742435 31422051 68316835 22352793
+==86878== 
+==86878== I   refs:      4,814,360,456
+==86878== I1  misses:      117,196,277
+==86878== LLi misses:           53,274
+==86878== I1  miss rate:          2.43%
+==86878== LLi miss rate:          0.00%
+==86878== 
+==86878== D   refs:      2,231,848,293  (1,442,531,112 rd + 789,317,181 wr)
+==86878== D1  misses:      132,084,858  (  105,820,366 rd +  26,264,492 wr)
+==86878== LLd misses:        8,217,452  (    1,889,400 rd +   6,328,052 wr)
+==86878== D1  miss rate:           5.9% (          7.3%   +         3.3%  )
+==86878== LLd miss rate:           0.4% (          0.1%   +         0.8%  )
+==86878== 
+==86878== LL refs:         249,281,135  (  223,016,643 rd +  26,264,492 wr)
+==86878== LL misses:         8,270,726  (    1,942,674 rd +   6,328,052 wr)
+==86878== LL miss rate:            0.1% (          0.0%   +         0.8%  )
+==86878== 
+==86878== Branches:        848,059,270  (  779,742,435 cond +  68,316,835 ind)
+==86878== Mispredicts:      53,774,844  (   31,422,051 cond +  22,352,793 ind)
+==86878== Mispred rate:            6.3% (          4.0%     +        32.7%   )
+ jason  jason-virtual-machine  ~  ep-build  $  /usr/bin/time  ./Products/energyplus -w ../lefticus-EP/weather/USA_CO_Boulder_TMY2.epw ../lefticus-EP/testfiles/1ZoneUncontrolled.idf 
+
+
+==========================
+--------------------------
+==========================
+
+Post-json2cpp -O3, unstripped
+
+lrwxrwxrwx 1 jason jason        17 Mar  1 10:26 Products/energyplus -> energyplus-22.1.0
+-rwxrwxr-x 1 jason jason     29488 Mar  1 10:26 Products/energyplus-22.1.0
+-rwxrwxr-x 1 jason jason  28318256 Mar  1 10:30 Products/energyplus_tests
+lrwxrwxrwx 1 jason jason        26 Mar  1 10:25 Products/libenergyplusapi.so -> libenergyplusapi.so.22.1.0
+-rwxrwxr-x 1 jason jason  72785832 Mar  1 10:25 Products/libenergyplusapi.so.22.1.0
+-rw-rw-r-- 1 jason jason 126370852 Mar  1 10:25 Products/libenergypluslib.a
+-rw-rw-r-- 1 jason jason   1547098 Mar  1 10:26 Products/libenergyplusparser.a
+
+------
+
+- ctest -j10
+
+99% tests passed, 2 tests failed out of 2415
+
+Total Test time (real) = 317.90 sec
+
+The following tests FAILED:
+	572 - integration.SingleFamilyHouse_HP_Slab (Failed)
+	573 - integration.SingleFamilyHouse_HP_Slab_Dehumidification (Failed)
+Errors while running CTest
+
+------
+
+- ./Products/energplus-tests
+
+
+[----------] Global test environment tear-down
+[==========] 1616 tests from 25 test suites ran. (168177 ms total)
+[  PASSED  ] 1616 tests.
+
+  YOU HAVE 12 DISABLED TESTS
+
+116.53user 51.65system 2:48.22elapsed 99%CPU (0avgtext+0avgdata 395212maxresident)k
+0inputs+5656outputs (0major+38675458minor)pagefaults 0swaps
+
+-------
+
+- /usr/bin/time ./Products/energyplus -w ../lefticus-EP/weather/USA_CO_Boulder_TMY2.epw ../lefticus-EP/testfiles/5ZoneAirCooled.idf
+
+EnergyPlus Run Time=00hr 00min  9.99sec
+EnergyPlus Completed Successfully.
+9.89user 0.18system 0:10.08elapsed 99%CPU (0avgtext+0avgdata 204896maxresident)k
+0inputs+23904outputs (0major+41767minor)pagefaults 0swaps
+
+
+------
+
+After stripping:
+
+lrwxrwxrwx 1 jason jason       17 Mar  1 10:26 Products/energyplus -> energyplus-22.1.0
+-rwxrwxr-x 1 jason jason    22672 Mar  1 11:27 Products/energyplus-22.1.0
+-rwxrwxr-x 1 jason jason 24300784 Mar  1 11:27 Products/energyplus_tests
+lrwxrwxrwx 1 jason jason       26 Mar  1 10:25 Products/libenergyplusapi.so -> libenergyplusapi.so.22.1.0
+-rwxrwxr-x 1 jason jason 65445608 Mar  1 11:27 Products/libenergyplusapi.so.22.1.0
+-rw-rw-r-- 1 jason jason 66713428 Mar  1 11:27 Products/libenergypluslib.a
+-rw-rw-r-- 1 jason jason   706242 Mar  1 11:27 Products/libenergyplusparser.a
+
+
+------
+
+- valgrind --tool=callgrind ./Products/energyplus -w ../lefticus-EP/weather/USA_CO_Boulder_TMY2.epw ../lefticus-EP/testfiles/5ZoneAirCooled.idf
+
+==64712== 
+==64712== Events    : Ir
+==64712== Collected : 40128043695
+==64712== 
+==64712== I   refs:      40,128,043,695
+
+
+- calls to malloc: 2176565
+- calls to new:    2176467
+
+
+
+-------
+
+- bloaty with debug info
+
+
+ jason  jason-virtual-machine  ~  bloaty  build  master  ?  $  ./bloaty ../../lefticus-EP-build/Products/energyplus
+    FILE SIZE        VM SIZE    
+ --------------  -------------- 
+  60.5%  1.11Mi   0.0%       0    .debug_str
+  34.4%   647Ki   0.0%       0    .debug_info
+   1.5%  28.1Ki   0.0%       0    .debug_loc
+   1.2%  22.4Ki   0.0%       0    .debug_line
+   0.4%  8.44Ki   0.0%       0    .debug_abbrev
+   0.4%  7.05Ki   0.0%       0    .debug_ranges
+   0.3%  5.99Ki  35.6%  5.99Ki    .text
+   0.2%  3.57Ki   0.0%       0    [Unmapped]
+   0.2%  3.41Ki   0.0%       0    .strtab
+   0.2%  3.26Ki   0.0%       0    .symtab
+   0.1%  2.81Ki  16.7%  2.81Ki    .dynstr
+   0.1%  2.40Ki  14.0%  2.36Ki    [22 Others]
+   0.1%  2.38Ki   0.0%       0    [ELF Section Headers]
+   0.1%  1.64Ki   9.7%  1.64Ki    .dynsym
+   0.1%  1.19Ki   7.1%  1.19Ki    .eh_frame
+   0.1%    1008   5.8%    1008    .rela.dyn
+   0.0%     560   3.2%     560    .dynamic
+   0.0%     504   2.9%     504    [ELF Program Headers]
+   0.0%     432   2.5%     432    .rela.plt
+   0.0%     400   2.3%     400    .rodata
+   0.0%     384   0.0%       0    .debug_aranges
+ 100.0%  1.84Mi 100.0%  16.8Ki    TOTAL
+ jason  jason-virtual-machine  ~  bloaty  build  master  ?  $  ./bloaty ../../lefticus-EP-build/Products/libenergyplusapi.so
+    FILE SIZE        VM SIZE    
+ --------------  -------------- 
+  48.4%   343Mi   0.0%       0    .debug_info
+  25.0%   177Mi   0.0%       0    .debug_loc
+   7.7%  54.9Mi   0.0%       0    .debug_str
+   5.9%  41.9Mi   0.0%       0    .debug_ranges
+   4.9%  34.6Mi  44.1%  34.6Mi    .text
+   2.7%  19.2Mi   0.0%       0    .debug_line
+   0.0%       0  20.6%  16.2Mi    .bss
+   1.1%  7.86Mi  10.0%  7.86Mi    .rela.dyn
+   1.0%  6.99Mi   8.9%  6.99Mi    .data.rel.ro
+   0.9%  6.24Mi   7.9%  6.24Mi    .rodata
+   0.7%  5.02Mi   0.0%       0    .strtab
+   0.4%  2.71Mi   0.0%       0    .debug_abbrev
+   0.3%  2.38Mi   3.0%  2.38Mi    .dynstr
+   0.3%  1.98Mi   0.0%       0    .symtab
+   0.2%  1.31Mi   1.7%  1.31Mi    .eh_frame
+   0.2%  1.21Mi   1.5%  1.21Mi    .gcc_except_table
+   0.1%   734Ki   0.9%   734Ki    .dynsym
+   0.1%   627Ki   0.8%   621Ki    [22 Others]
+   0.1%   603Ki   0.0%       0    .debug_aranges
+   0.0%   270Ki   0.3%   270Ki    .rela.plt
+   0.0%   216Ki   0.3%   216Ki    .gnu.hash
+ 100.0%   709Mi 100.0%  78.6Mi    TOTAL
+
+
+------
+
+- simple timing data
+
+1.13user 0.07system 0:01.21elapsed 99%CPU (0avgtext+0avgdata 193680maxresident)k
+0inputs+6672outputs (0major+39794minor)pagefaults 0swaps
+ jason  jason-virtual-machine  ~  lefticus-EP-build  $  /usr/bin/time ./Products/energyplus -w ../lefticus-EP/weather/USA_CO_Boulder_TMY2.epw ../lefticus-EP/testfiles/1ZoneUncontrolled.idf
+
+-----
+
+- cache and branch sim
+
+
+==86863== 
+==86863== Events    : Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw Bc Bcm Bi Bim
+==86863== Collected : 4055293333 1262351016 662278129 117224187 102312937 25758080 52116 649360 5701281 655504742 28256099 54369565 19897570
+==86863== 
+==86863== I   refs:      4,055,293,333
+==86863== I1  misses:      117,224,187
+==86863== LLi misses:           52,116
+==86863== I1  miss rate:          2.89%
+==86863== LLi miss rate:          0.00%
+==86863== 
+==86863== D   refs:      1,924,629,145  (1,262,351,016 rd + 662,278,129 wr)
+==86863== D1  misses:      128,071,017  (  102,312,937 rd +  25,758,080 wr)
+==86863== LLd misses:        6,350,641  (      649,360 rd +   5,701,281 wr)
+==86863== D1  miss rate:           6.7% (          8.1%   +         3.9%  )
+==86863== LLd miss rate:           0.3% (          0.1%   +         0.9%  )
+==86863== 
+==86863== LL refs:         245,295,204  (  219,537,124 rd +  25,758,080 wr)
+==86863== LL misses:         6,402,757  (      701,476 rd +   5,701,281 wr)
+==86863== LL miss rate:            0.1% (          0.0%   +         0.9%  )
+==86863== 
+==86863== Branches:        709,874,307  (  655,504,742 cond +  54,369,565 ind)
+==86863== Mispredicts:      48,153,669  (   28,256,099 cond +  19,897,570 ind)
+==86863== Mispred rate:            6.8% (          4.3%     +        36.6%   )
+ jason  jason-virtual-machine  ~  lefticus-EP-build  $  /usr/bin/time ./Products/energyplus -w ../lefticus-EP/weather/USA_CO_Boulder_TMY2.epw ../lefticus-EP/testfiles/1ZoneUncontrolled.idf 
+
+
+------------
+
+Almost all of the allocation differences seem to be from `std::map` and `std::string`
+
+
+
+
+-----------
+===========
+-----------
+
+
+Debug timing:
+
+
+
+-- Pre-json2cpp
+
+
+Total Test time (real) = 711.97 sec
+ jason  jason-virtual-machine  ~  ep-build  $  ctest -j10 -R Fixture
+
+-----
+
+35.40user 0.19system 0:35.60elapsed 99%CPU (0avgtext+0avgdata 278888maxresident)k
+0inputs+6672outputs (0major+48203minor)pagefaults 0swaps
+ jason  jason-virtual-machine  ~  ep-build  $  /usr/bin/time  ./Products/energyplus -w ../lefticus-EP/weather/USA_CO_Boulder_TMY2.epw ../lefticus-EP/testfiles/1ZoneUncontrolled.idf 
+
+
+=========
+
+
+-- json2cpp
+
+Total Test time (real) = 389.68 sec
+
+The following tests FAILED:
+	1329 - SQLiteFixture.HVACSizing_Passes_SQL_Output (SIGTRAP)
+	2033 - EnergyPlusFixture.AirLoop_ReturnFan_MinFlow (Child aborted)
+Errors while running CTest
+ jason  jason-virtual-machine  ~  lefticus-EP-build  $  ctest -j10 -R Fixture
+
+
+------
+
+
+31.73user 0.16system 0:31.94elapsed 99%CPU (0avgtext+0avgdata 262076maxresident)k
+3144inputs+6672outputs (0major+42250minor)pagefaults 0swaps
+ jason  jason-virtual-machine  ~  lefticus-EP-build  $  /usr/bin/time  ./Products/energyplus -w ../lefticus-EP/weather/USA_CO_Boulder_TMY2.epw ../lefticus-EP/testfiles/1ZoneUncontrolled.idf 
+
+
